@@ -1,0 +1,56 @@
+@import url("https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,100;0,300;0,400;0,500;0,700;0,900;1,100;1,300;1,400;1,500;1,700;1,900&display=swap");
+
+@font-face {
+  font-family: "Aileron";
+  src: url("./assets/aileron.regular.otf") format("opentype");
+  font-weight: normal;
+  font-style: normal;
+}
+
+body {
+  padding: 0;
+  margin: 0;
+  box-sizing: inherit;
+  font-family: "Aileron", sans-serif;
+  background: #0b0317 !important;
+  color: #f6f5f7 !important;
+}
+
+/* LoginSignup */
+#login-signup {
+  text-align: center;
+  padding: 0 16px;
+}
+
+#login-signup .logo {
+  margin-top: 54px;
+}
+
+#login-signup .logo img {
+  width: 84px;
+  height: 84px;
+}
+
+#login-signup .title {
+  margin-top: 133px;
+  margin-bottom: 67px;
+  font-size: 24px;
+  font-style: normal;
+  font-weight: 600;
+  line-height: normal;
+  letter-spacing: 0.24px;
+}
+
+#login-signup button {
+  display: block;
+  width: 100%;
+}
+
+.btn-login {
+  background-color: #fff !important;
+  margin-bottom: 16px;
+}
+
+.btn-signup {
+  background-color: #56f0b8 !important;
+}
