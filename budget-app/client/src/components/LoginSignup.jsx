@@ -1,3 +1,7 @@
+
+import { Link } from "react-router-dom";
+import Button from 'react-bootstrap/Button';
+
 const LoginSignup = () => {
   return (
     <div id="login-signup">
@@ -9,8 +13,8 @@ const LoginSignup = () => {
       </div>
 
       <h2 className="title">Sign up or log in</h2>
-      <button className="btn btn-login">Log In</button>
-      <button className="btn btn-signup">Sign Up</button>
+      <Button as={Link} to="/login" className="btn btn-login w-100">Log In</Button>
+      <Button className="btn btn-green">Sign Up</Button>
     </div>
   );
 };

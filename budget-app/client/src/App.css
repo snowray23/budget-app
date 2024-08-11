@@ -31,7 +31,7 @@ body {
   height: 84px;
 }
 
-#login-signup .title {
+#login-signup .title{
   margin-top: 133px;
   margin-bottom: 67px;
   font-size: 24px;
@@ -51,6 +51,46 @@ body {
   margin-bottom: 16px;
 }
 
-.btn-signup {
+.btn-green {
   background-color: #56f0b8 !important;
+}
+
+/* login */
+
+#login {
+  padding: 140px 15px 0 15px;
+}
+
+#login h2 {
+  font-size: 24px;
+  font-style: normal;
+  font-weight: 600;
+  line-height: normal;
+  letter-spacing: 0.24px;
+}
+
+#login-signup .btn,
+#login .btn
+{
+  height: 50px !important;
+  color: #0C0B0C;
+}
+
+#login-signup input,
+#login input {
+  height: 44px !important;
+}
+
+#login .password {
+  margin-bottom: 24px;
+}
+
+
+a.signup-link {
+  display: block;
+  text-align: center;
+  margin-top: 24px;
+  color:#f6f5f7;
+  font-size: 16px;
+  text-decoration: none;
 }
