@@ -16,6 +16,14 @@ body {
   color: #f6f5f7 !important;
 }
 
+/* Landing */
+.landing {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+}
+
 /* LoginSignup */
 #login-signup {
   text-align: center;
@@ -24,11 +32,6 @@ body {
 
 #login-signup .logo {
   margin-top: 54px;
-}
-
-#login-signup .logo img {
-  width: 84px;
-  height: 84px;
 }
 
 #login-signup .title{
@@ -57,16 +60,18 @@ body {
 
 /* login */
 
-#login {
+#login, #signup {
   padding: 140px 15px 0 15px;
 }
 
-#login h2 {
+#login h2,
+#signup h2 {
   font-size: 24px;
   font-style: normal;
   font-weight: 600;
   line-height: normal;
   letter-spacing: 0.24px;
+  margin-bottom: 24px;
 }
 
 #login-signup .btn,
@@ -77,7 +82,8 @@ body {
 }
 
 #login-signup input,
-#login input {
+#login input,
+#signup input{
   height: 44px !important;
 }
 
@@ -85,12 +91,25 @@ body {
   margin-bottom: 24px;
 }
 
-
 a.signup-link {
   display: block;
   text-align: center;
   margin-top: 24px;
   color:#f6f5f7;
   font-size: 16px;
-  text-decoration: none;
+}
+
+#signup button {
+  margin-top: 24px;
+  height: 51px;
+}
+
+#signup button:disabled {
+  background-color: #0C0B0C !important;
+}
+
+.back {
+   position: absolute;
+   left: 30px;
+   top : 60px;
 }

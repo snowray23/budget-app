@@ -21,12 +21,12 @@ const Login = () => {
       <Form onSubmit={handleSubmit}>
         <Form.Group className="mb-3">
           <Form.Label>Username*</Form.Label>
-          <Form.Control type="text" value={credential.username} onChange={handleChange} name="username"/>
+          <Form.Control type="text" value={credential.username} onChange={handleChange} name="username" required/>
         </Form.Group>
 
         <Form.Group className="password">
           <Form.Label>Password*</Form.Label>
-          <Form.Control type="password" value={credential.password} onChange={handleChange} name="password"/>
+          <Form.Control type="password" value={credential.password} onChange={handleChange} name="password" required/>
         </Form.Group>
         
         <Button className="btn btn-green w-100" type="submit">

@@ -1,21 +1,36 @@
 
 import { Link } from "react-router-dom";
 import Button from 'react-bootstrap/Button';
+import {useState, useEffect} from 'react';
+import logoLg from '../assets/logo_lg.png'
+import logo from '../assets/logo.png'
+
 
 const LoginSignup = () => {
+  const [showLanding, setShowLanding] = useState(true)
+
+  useEffect(() => {
+    setTimeout(() => { setShowLanding(false) }, 2000)
+  }, [])
+
   return (
+    <>
+    {showLanding ? <div className="landing">
+      <img src={logoLg} alt="large-logo" />
+    </div> :
     <div id="login-signup">
       <div className="logo">
         <img
-          src="https://is1-ssl.mzstatic.com/image/thumb/Purple221/v4/c7/ae/9a/c7ae9a7c-f4fc-07ad-04b3-dc04d76a95e3/AppIcon-0-0-1x_U007epad-0-85-220.png/60x60bb.jpg"
+          src={logo}
           alt="Logo"
         />
       </div>
 
       <h2 className="title">Sign up or log in</h2>
       <Button as={Link} to="/login" className="btn btn-login w-100">Log In</Button>
-      <Button className="btn btn-green">Sign Up</Button>
-    </div>
+      <Button as={Link} to="/signup" className="btn btn-green w-100" >Sign Up</Button>
+    </div>}
+    </>
   );
 };
 
