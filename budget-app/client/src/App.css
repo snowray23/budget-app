@@ -60,12 +60,17 @@ body {
 
 /* login */
 
-#login, #signup {
+#login, #signup{
   padding: 140px 15px 0 15px;
 }
 
+#budget-setup {
+  padding: 112px 15px 0 15px;
+}
+
 #login h2,
-#signup h2 {
+#signup h2,
+#budget-setup h2 {
   font-size: 24px;
   font-style: normal;
   font-weight: 600;
@@ -104,7 +109,8 @@ a.signup-link {
   height: 51px;
 }
 
-#signup button:disabled {
+#signup button:disabled, 
+#budget-setup button:disabled {
   background-color: #0C0B0C !important;
 }
 
@@ -112,4 +118,20 @@ a.signup-link {
    position: absolute;
    left: 30px;
    top : 60px;
+}
+
+#signup ul {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+}
+
+#signup ul li {
+  width: 50%;
+}
+
+/* Goals */
+.goals {
+  padding: 0 37.5px;
+  margin: 24px 0;
 }
