@@ -1,135 +1,262 @@
 import Button from "react-bootstrap/Button";
 import Form from "react-bootstrap/Form";
 import { Link } from "react-router-dom";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import Vector from "../assets/Vector.png";
-import { useLocation } from'react-router-dom';
+import { useLocation } from "react-router-dom";
 
-import housing from "../assets/housing.png";
-import insurance from "../assets/insurance.png";
-import loans from "../assets/loans.png";
-import membership from "../assets/membership.png";
-import mental from "../assets/mental.png";
-import other from "../assets/other.png";
-import phone from "../assets/housing.png";
-import subscribe from "../assets/sub.png";
-import utilities from "../assets/utilities.png";
+import { expenses } from "../expenses";
+import circle from "../assets/circle.webp"
 
 const BudgetSetup = () => {
-    const location = useLocation();
-    const { userInfo } = location.state;
-   
-    const [step, setStep] = useState('one')
-    const [financialInfo, setFinancialInfo] = useState({ income: '', checkingBalance: '', savingsBalance: ''  })
+  const location = useLocation();
+  const { userInfo } = location.state;
 
-    const handleChange = (e) => {
-        setFinancialInfo({ ...financialInfo, [e.target.name]: e.target.value });
-      };
+  const [step, setStep] = useState("one");
+  const [financialInfo, setFinancialInfo] = useState({
+    income: "",
+    checkingBalance: "",
+    savingsBalance: "",
+  });
+  const [selectedExpenses, setSelectedExpenses] = useState([]);
+  const [allExpnseInputHasValue, setAllExpnseInputHasValue] = useState(false);
+  const [remainingBalance, setRemainingBalance] = useState(0)
+
+  const handleChange = (e) => {
+    setFinancialInfo({ ...financialInfo, [e.target.name]: e.target.value });
+  };
+
+  const handleClick = (expense) => {
+    const foundExpense = selectedExpenses.find(
+      (item) => item.id === expense.id
+    );
+    if (!foundExpense) {
+      expense.selected = true;
+      setSelectedExpenses([...selectedExpenses, expense]);
+    } else {
+      expense.selected = false;
+      const filteredExpenses = selectedExpenses.filter(
+        (item) => item.id !== expense.id
+      );
+      setSelectedExpenses(filteredExpenses);
+    }
+  };
+
+  const handleExpenseChange = (e, expenseItem) => {
+    const updatedExpenses = selectedExpenses.map(item => {
+      if(item.id === expenseItem.id) {
+        return {...item, amount:  e.target.value}
+      }
+      return item
+    })
+    setSelectedExpenses(updatedExpenses)
+  };
+  
+  const checkInputFieldHasValue = () => {
+    const hasValueArr = selectedExpenses.filter(item => item.amount.length > 0)
+   if  (hasValueArr.length === selectedExpenses.length) {
+    setAllExpnseInputHasValue(true);
+   }else {
+        setAllExpnseInputHasValue(false)
+    }
+   };
+  
+
+  useEffect(() => {
+    checkInputFieldHasValue()
+  }, [selectedExpenses])
+  
 
   return (
     <div id="budget-setup">
-        {step === 'one' && <div>
-        {/* <Link to="/">
+      {step === "one" && (
+        <div>
+          {/* <Link to="/">
         <img className="back" src={Vector} alt="backbutton" />
         </Link> */}
-        <h2>Let's set up your budget</h2>
+          <h2>Let's set up your budget</h2>
 
-        <Form.Group className="mb-3">
-              <Form.Label>What's your monthly income</Form.Label>
-              <Form.Control
-                type="number"
-                value={financialInfo.income}
-                onChange={handleChange}
-                name="income"
-                required
-                placeholder="$0.00"
-              />
-        </Form.Group>
-
-        <Form.Group className="mb-3">
-              <Form.Label>How much have you got in your checking account?</Form.Label>
-              <Form.Control
-                type="number"
-                value={financialInfo.checkingBalance}
-                onChange={handleChange}
-                name="checkingBalance"
-                required
-                placeholder="$0.00"
-              />
-        </Form.Group>
-
-        <Form.Group className="mb-3">
-              <Form.Label>How much have you got in your savings account?</Form.Label>
-              <Form.Control
-                type="number"
-                value={financialInfo.savingsBalance}
-                onChange={handleChange}
-                name="savingsBalance"
-                required
-                 placeholder="$0.00"
-              />
-        </Form.Group>
-
-        <Button 
-              className="btn btn-green w-100"
-              disabled={!financialInfo.income || !financialInfo.checkingBalance || !financialInfo.savingsBalance}
-              onClick={() => setStep('two')}
-            >
-              Continue
-        </Button>
-        </div>}
-
-        {step === 'two' && <div>
-            <img
-              className="back"
-              src={Vector}
-              alt="backbutton"
-              onClick={() => setStep("one")}
+          <Form.Group className="mb-3">
+            <Form.Label>What's your monthly income</Form.Label>
+            <Form.Control
+              type="number"
+              value={financialInfo.income}
+              onChange={handleChange}
+              name="income"
+              required
+              placeholder="$0.00"
             />
+          </Form.Group>
 
-            <h2>Let's set up your budget</h2>
-            <p className="my-0">What recurring expenses do you have?</p>
+          <Form.Group className="mb-3">
+            <Form.Label>
+              How much have you got in your checking account?
+            </Form.Label>
+            <Form.Control
+              type="number"
+              value={financialInfo.checkingBalance}
+              onChange={handleChange}
+              name="checkingBalance"
+              required
+              placeholder="$0.00"
+            />
+          </Form.Group>
 
-            <div className="goals d-flex flex-wrap gap-3 justify-content-center">
-                <div className="goal"><img src={housing} alt="housing" /></div>
-                <div className="goal"><img src={housing} alt="housing" /></div>
-                <div className="goal"><img src={housing} alt="housing" /></div>
-                <div className="goal"><img src={housing} alt="housing" /></div>
-                <div className="goal"><img src={housing} alt="housing" /></div>
-                <div className="goal"><img src={housing} alt="housing" /></div>
-                <div className="goal"><img src={housing} alt="housing" /></div>
-                <div className="goal"><img src={housing} alt="housing" /></div>
-                <div className="goal"><img src={housing} alt="housing" /></div>
-              
-            </div>
+          <Form.Group className="mb-3">
+            <Form.Label>
+              How much have you got in your savings account?
+            </Form.Label>
+            <Form.Control
+              type="number"
+              value={financialInfo.savingsBalance}
+              onChange={handleChange}
+              name="savingsBalance"
+              required
+              placeholder="$0.00"
+            />
+          </Form.Group>
 
+          <Button
+            className="btn btn-green w-100"
+            disabled={
+              !financialInfo.income ||
+              !financialInfo.checkingBalance ||
+              !financialInfo.savingsBalance
+            }
+            onClick={() => setStep("two")}
+          >
+            Continue
+          </Button>
+        </div>
+      )}
 
-            <Button 
-              className="btn btn-green w-100"
-              onClick={() => setStep('three')}
-            >
-              Continue
-        </Button>
+      {step === "two" && (
+        <div>
+          <img
+            className="back"
+            src={Vector}
+            alt="backbutton"
+            onClick={() => setStep("one")}
+          />
 
+          <h2>Let's set up your budget</h2>
+          <p className="my-0">What recurring expenses do you have?</p>
 
+          <div className="goals d-flex flex-wrap gap-3 justify-content-center">
+            {expenses.map((expense) => (
+              <div
+                style={{ background: expense.selected && "rgba(86,92,240, 1)" }}
+                className="goal d-flex flex-column align-items-center"
+                key={expense.id}
+                onClick={() => handleClick(expense)}
+              >
+                <img src={expense.icon} alt={expense.text} />{" "}
+                <p className="mt-4 text">{expense.text}</p>
+              </div>
+            ))}
+          </div>
 
+          <Button
+            className="btn btn-green w-100"
+            onClick={() => setStep("three")}
+            disabled={selectedExpenses.length === 0}
+          >
+            Continue
+          </Button>
+        </div>
+      )}
 
+      {step === "three" && (
+        <div>
+          <img
+            className="back"
+            src={Vector}
+            alt="backbutton"
+            onClick={() => setStep("two")}
+          />
 
-        </div>}
+          <h2>Let's set up your budget</h2>
+          <p>How much do you spend on your recurring expenses?</p>
+          <p>Enter the maximum amount you pay each month</p>
 
+          <div className="expenses-list">
+            {selectedExpenses.map((item) => (
+              <div
+                className="expense-item d-flex justify-content-between align-items-center px-2 py-3 my-2"
+                key={item.id}
+              >
+                <div className="expense-icon">
+                  <img src={item.icon} alt={item.text} className="me-2" />{" "}
+                  <span>{item.text}</span>{" "}
+                </div>
+                <div className="expense-input d-flex align-items-center">
+                  <span className="me-2">$</span>
+                  <input
+                    type="number"
+                    className="w-100 p-2"
+                    placeholder="$0.00"
+                    onChange={(e) => handleExpenseChange(e, item)}
+                  />{" "}
+                </div>
+              </div>
+            ))}
+          </div>
 
+          <Button
+            className="btn btn-green w-100"
+            onClick={() => {
+              setStep("four")
+              setTimeout(() => {
+                setStep("five")
+              }, 3000)
+              const income = financialInfo.income;
+              let sumExpenses = 0;
+              const expenses = selectedExpenses.forEach(item => {
+                sumExpenses += Number(item.amount)
+              })
 
+              setRemainingBalance(income - sumExpenses)
+            }}
+            disabled={!allExpnseInputHasValue}
+          >
+            Continue
+          </Button>
+        </div>
+      )}
 
+{step === 'four' && <div id="spinner">
+  <h2>Calculating your budget</h2>
+  <img src={circle} alt="spinner" width="200px" height="200px"/>
 
-        {/* {step === 'three' && <div></div>}
-        {step === 'four' && <div></div>}
-        {step === 'five' && <div></div>}
+  </div>}
+
+  {step === 'five' && <div>
+    <h2>Based on your income and expenses, we've calculated the amount you have to spend</h2>
+
+<p id="remaining-balance">${remainingBalance}</p>
+    <Button
+            className="btn btn-green w-100"
+            disabled={!allExpnseInputHasValue}
+          >
+            Continue
+          </Button>
+    <Button
+            className="w-100 mt-2 border-light"
+            style={{background: 'transparent'}}
+          >
+            i want to change something
+          </Button>
+    
+    </div>}
+
+      {/*
+       
         {step === 'six' && <div></div>}
         {step === 'seven' && <div></div>}
         {step === 'eigth' && <div></div>}
-        {step === 'nine' && <div></div>} */}
+        {step === 'nine' && <div></div>}  */}
     </div>
-  )
-}
+  );
+};
 
-export default BudgetSetup
+export default BudgetSetup;
