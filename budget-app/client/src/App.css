@@ -60,12 +60,17 @@ body {
 
 /* login */
 
-#login, #signup {
+#login, #signup{
   padding: 140px 15px 0 15px;
 }
 
+#budget-setup {
+  padding: 112px 15px 0 15px;
+}
+
 #login h2,
-#signup h2 {
+#signup h2,
+#budget-setup h2 {
   font-size: 24px;
   font-style: normal;
   font-weight: 600;
@@ -99,12 +104,18 @@ a.signup-link {
   font-size: 16px;
 }
 
-#signup button {
+#signup button 
+{
   margin-top: 24px;
   height: 51px;
 }
 
-#signup button:disabled {
+#budget-setup button {
+  height: 51px;
+}
+
+#signup button:disabled, 
+#budget-setup button:disabled {
   background-color: #0C0B0C !important;
 }
 
@@ -112,4 +123,93 @@ a.signup-link {
    position: absolute;
    left: 30px;
    top : 60px;
+}
+
+#signup ul {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+}
+
+#signup ul li {
+  width: 50%;
+}
+
+/* Goals */
+.goals {
+  padding: 0 37.5px;
+  margin: 24px 0;
+}
+
+.goals .goal {
+  width: 84px;
+  height: 84px;
+  border-radius: 100%;
+  background-color: rgba(86,92,240, 0.5);
+  padding: 16px;
+  margin-bottom: 28px;
+}
+
+.goals .goal .text {
+  font-size: 12px;
+}
+
+img[alt="Utilities"] {
+  width: 49px;
+  height: 48px;
+}
+
+.goals button {
+  height: 51px;
+}
+
+.expense-item {
+  background-image: linear-gradient(to right, #9055F0 , #565CF0);
+  border-radius: 8px ;
+  height: 93px;
+}
+
+.expense-item .expense-icon {
+  width: 60%;
+}
+
+.expense-item .expense-input {
+  width: 147px;
+  height: 100%;
+}
+
+.expense-item .expense-input input {
+  height: 100%;
+  border-radius: 8px;
+  border: 0;
+  font-weight: bold;
+}
+
+.expense-item .expense-input input:focus {
+  outline: none;
+}
+
+#budget-setup button {
+  margin-top: 24px;
+}
+
+#spinner {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+  transform: translateY(-130px);
+}
+
+#remaining-balance {
+  color: #56F0B8;
+  font-family: Aileron;
+  font-size: 48px;
+  font-style: normal;
+  font-weight: 700;
+  line-height: normal;
+  letter-spacing: 0.48px;
+  text-align: center;
+  margin: 120px 0;
 }
