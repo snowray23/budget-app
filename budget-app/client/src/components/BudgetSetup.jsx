@@ -10,7 +10,7 @@ import circle from "../assets/circle.webp"
 
 const BudgetSetup = () => {
   const location = useLocation();
-  const { userInfo } = location.state;
+  const userInfo = (location.state && location.state.userInfo) || (localStorage.getItem('userInfo') && JSON.parse(localStorage.getItem('userInfo')));
 
   const [step, setStep] = useState("one");
   const [financialInfo, setFinancialInfo] = useState({
@@ -21,6 +21,7 @@ const BudgetSetup = () => {
   const [selectedExpenses, setSelectedExpenses] = useState([]);
   const [allExpnseInputHasValue, setAllExpnseInputHasValue] = useState(false);
   const [remainingBalance, setRemainingBalance] = useState(0)
+
 
   const handleChange = (e) => {
     setFinancialInfo({ ...financialInfo, [e.target.name]: e.target.value });
@@ -65,6 +66,10 @@ const BudgetSetup = () => {
   useEffect(() => {
     checkInputFieldHasValue()
   }, [selectedExpenses])
+
+  useEffect(() => {
+    localStorage.setItem('userInfo', JSON.stringify(userInfo))
+  }, [])
   
 
   return (
@@ -145,7 +150,7 @@ const BudgetSetup = () => {
           <div className="goals d-flex flex-wrap gap-3 justify-content-center">
             {expenses.map((expense) => (
               <div
-                style={{ background: expense.selected && "rgba(86,92,240, 1)" }}
+                style={{ border: expense.selected && "3px solid #f6f5f7" }}
                 className="goal d-flex flex-column align-items-center"
                 key={expense.id}
                 onClick={() => handleClick(expense)}
@@ -237,24 +242,23 @@ const BudgetSetup = () => {
     <Button
             className="btn btn-green w-100"
             disabled={!allExpnseInputHasValue}
+            as={Link}
+            state={{ userInfo, financialInfo, remainingBalance }}
+            to="/goal-setup"
           >
             Continue
           </Button>
     <Button
             className="w-100 mt-2 border-light"
-            style={{background: 'transparent'}}
+            style={{background: 'transparent', color: '#F6F5F7'}}
+            onClick={() => setStep('one')}
           >
-            i want to change something
+            I want to change something
           </Button>
     
     </div>}
 
-      {/*
-       
-        {step === 'six' && <div></div>}
-        {step === 'seven' && <div></div>}
-        {step === 'eigth' && <div></div>}
-        {step === 'nine' && <div></div>}  */}
+      
     </div>
   );
 };

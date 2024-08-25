@@ -47,6 +47,7 @@ body {
 #login-signup button {
   display: block;
   width: 100%;
+  
 }
 
 .btn-login {
@@ -56,33 +57,37 @@ body {
 
 .btn-green {
   background-color: #56f0b8 !important;
+  color: #0C0B0C;
 }
 
 /* login */
 
-#login, #signup{
-  padding: 140px 15px 0 15px;
+#login, #signup, #goal-setup,#budget-setup{
+  padding: 88px 15px 0 15px;
 }
 
-#budget-setup {
-  padding: 112px 15px 0 15px;
-}
+
 
 #login h2,
 #signup h2,
-#budget-setup h2 {
+#budget-setup h2,
+#goal-setup h2 {
   font-size: 24px;
   font-style: normal;
   font-weight: 600;
   line-height: normal;
   letter-spacing: 0.24px;
   margin-bottom: 24px;
+  margin-top: 24px;
 }
 
 #login-signup .btn,
-#login .btn
+#login .btn,
+#signup .btn,
+#budget-setup .btn,
+#goal-setup .btn
 {
-  height: 50px !important;
+  padding: 16px;
   color: #0C0B0C;
 }
 
@@ -107,16 +112,14 @@ a.signup-link {
 #signup button 
 {
   margin-top: 24px;
-  height: 51px;
-}
-
-#budget-setup button {
-  height: 51px;
 }
 
 #signup button:disabled, 
-#budget-setup button:disabled {
-  background-color: #0C0B0C !important;
+#budget-setup button:disabled,
+ #goal-setup button:disabled{
+  background-color: #F6F5F7 !important;
+  opacity: 0.25;
+  color: #0C0B0C;
 }
 
 .back {
@@ -145,7 +148,7 @@ a.signup-link {
   width: 84px;
   height: 84px;
   border-radius: 100%;
-  background-color: rgba(86,92,240, 0.5);
+  background-color: #565CF0;
   padding: 16px;
   margin-bottom: 28px;
 }
@@ -163,7 +166,7 @@ img[alt="Utilities"] {
   height: 51px;
 }
 
-.expense-item {
+.expense-item, .goal-item ,.secondary-goal{
   background-image: linear-gradient(to right, #9055F0 , #565CF0);
   border-radius: 8px ;
   height: 93px;
@@ -212,4 +215,68 @@ img[alt="Utilities"] {
   letter-spacing: 0.48px;
   text-align: center;
   margin: 120px 0;
+}
+
+
+/* goalsetup */
+
+#goal-setup button {
+  margin-top: 24px;
+  margin-bottom: 44px;
+}
+
+
+.goalset-item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 16px ;
+  width: 176px; 
+  height: 115px;
+  border-radius: 8px;
+  background: linear-gradient(180deg, #9055F0 0%, #565CF0 100%);
+  box-shadow: 0px 4px 4px 0px rgba(0, 0, 0, 0.10);
+  text-align: center;
+  box-sizing: border-box; 
+  flex-grow: 1;
+}
+
+#goal-setup input[type="radio"] {
+  width: 24px !important;
+  height: 24px;
+}
+
+.goalset-text {
+  width: 148px;
+  height: auto;
+}
+
+.goalset-icon {
+  display: block;
+  width: 42px;
+  height: 44px;
+  margin: 16px 0 6px 0
+}
+
+.goal-amount, .primary-amount, .secondary-amount {
+  width: 100%;
+  height: 44px;
+  border-radius: 4px;
+  border: 1px ;
+  padding: 8px;
+  outline: none; 
+ }
+
+p.custom-goal {
+  margin-top: 24px;
+  width: 362px;
+  height: auto;
+  color: #F6F5F7;
+  font-family: Aileron;
+  font-size: 16px;
+  font-style: normal;
+  font-weight: 400;
+  line-height: normal;
+  letter-spacing: 0.16px;
 }

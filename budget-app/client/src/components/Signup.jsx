@@ -37,7 +37,7 @@ const Signup = () => {
       <Link to="/">
         <img className="back" src={Vector} alt="backbutton" />
       </Link>
-      {/* <Form onSubmit={handleSubmit}> */}
+      <Form>
         {currentStep === "one" && (
           <div className="step-one">
             <h2>What's your name?</h2>
@@ -53,7 +53,7 @@ const Signup = () => {
               />
             </Form.Group>
 
-            <Form.Group className="password">
+            <Form.Group className="mb-4">
               <Form.Label>Last Name*</Form.Label>
               <Form.Control
                 type="text"
@@ -121,6 +121,7 @@ const Signup = () => {
                 onChange={handleChange}
                 name="password"
                 required
+                autoComplete="off"
               />
             </Form.Group>
 
@@ -148,7 +149,7 @@ const Signup = () => {
             </Button>
           </div>
         )}
-      {/* </Form> */}
+      </Form>
     </div>
   );
 };
