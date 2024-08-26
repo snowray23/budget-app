@@ -1,7 +1,7 @@
 {
   "homepage": "https://fjabbary/github.io/budget-app",
-  "predeploy":"npm run build",
-  "deploy":"gh-pages -d dist",
+  "predeploy": "npm run build",
+  "deploy": "gh-pages -d dist",
   "name": "budget-app",
   "private": true,
   "version": "0.0.0",
@@ -14,6 +14,7 @@
   },
   "dependencies": {
     "bootstrap": "^5.3.3",
+    "gh-pages": "^6.1.1",
     "react": "^18.3.1",
     "react-bootstrap": "^2.10.4",
     "react-dom": "^18.3.1",
