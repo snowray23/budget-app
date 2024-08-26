@@ -1,4 +1,7 @@
 {
+  "homepage": "https://fjabbary/github.io/budget-app",
+  "predeploy":"npm run build",
+  "deploy":"gh-pages -d dist",
   "name": "budget-app",
   "private": true,
   "version": "0.0.0",
