@@ -225,6 +225,7 @@ const GoalSetup = () => {
           >
             Take me to my dashboard
           </Button>
+          
   </div>
 )}
 
