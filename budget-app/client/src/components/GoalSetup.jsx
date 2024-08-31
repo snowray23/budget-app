@@ -3,12 +3,12 @@ import { useLocation, Link } from "react-router-dom";
 import Vector from "../assets/Vector.png";
 import { goals } from '../goals'; 
 import Button from 'react-bootstrap/esm/Button';
+import axios from 'axios'
 
 const GoalSetup = () => {
   const location = useLocation();
   const { userInfo, financialInfo, remainingBalance } = location.state;
-  console.log(userInfo, financialInfo, remainingBalance);
-
+  
  
   const [selectedGoals, setSelectedGoals] = useState([]);
   const [step, setStep] = useState("one"); 
@@ -16,6 +16,8 @@ const GoalSetup = () => {
   const [customGoalName, setCustomGoalName] = useState('')
   const [radioGoalSelected, setRadioGoalSelected] = useState(false);
   const [primaryGoalAmount, setPrimaryGoalAmount] = useState('')
+
+  // console.log({...userInfo, ...financialInfo, budget: remainingBalance, goals: selectedGoals})
 
   const handleGoalClick = (goal) => {
     const foundGoal = selectedGoals.find(
@@ -74,7 +76,6 @@ const GoalSetup = () => {
   }
 
   const handleSecondaryGoals = (e, id) => {
-    
     const updatedGoals = selectedGoals.map(item => {
       if(item.id === id) {
           return {...item, amount: e.target.value}
@@ -83,6 +84,26 @@ const GoalSetup = () => {
     })
     setSelectedGoals(updatedGoals)
   }
+
+ const handleClickSubmit = () => {
+     
+     const data = {...userInfo, ...financialInfo, budget: remainingBalance, goals: selectedGoals
+      .map(item => ({ ...item, user_id: 1 })) // Add `user_id` property
+      .map(({ selected, id, ...rest }) => rest)
+      } // Remove `selected` and `id` properties}
+
+     console.log(data)
+
+     axios.post('http://127.0.0.1:5000/signup', data)
+     .then(res => {
+        setStep("four")
+     })
+     .catch(err => {
+        alert('Signup failed!')
+        console.log(err)
+     })
+ }
+
   
   return (
     <div id="goal-setup">
@@ -208,7 +229,7 @@ const GoalSetup = () => {
           <Button
             className="btn btn-green w-100"
             disabled={selectedGoals.filter(item => !item.isPrimary).length + 1 !== selectedGoals.filter(item => item.amount).length}
-            onClick={() => setStep("four")}
+            onClick={handleClickSubmit}
           >
             Continue
           </Button>
