@@ -7,9 +7,9 @@ import PasswordChecklist from "react-password-checklist";
 
 const Signup = () => {
   const [userInfo, setUserInfo] = useState({
-    firstName: "",
-    lastName: "",
-    userName: "",
+    firstname: "",
+    lastname: "",
+    username: "",
     password: "",
   });
   const [currentStep, setCurrentStep] = useState("one");
@@ -20,17 +20,6 @@ const Signup = () => {
     setUserInfo({ ...userInfo, [e.target.name]: e.target.value });
   };
 
-  const handleSubmit = e => {
-    e.preventDefault();
-
-    console.log('Submitted')
-
-    if (true) {
-      
-    } else {
-      console.log('User registration unsuccessful!')
-    }
-  }
 
   return (
     <div id="signup">
@@ -46,9 +35,9 @@ const Signup = () => {
               <Form.Label>First Name*</Form.Label>
               <Form.Control
                 type="text"
-                value={userInfo.firstName}
+                value={userInfo.firstname}
                 onChange={handleChange}
-                name="firstName"
+                name="firstname"
                 required
               />
             </Form.Group>
@@ -57,16 +46,16 @@ const Signup = () => {
               <Form.Label>Last Name*</Form.Label>
               <Form.Control
                 type="text"
-                value={userInfo.lastName}
+                value={userInfo.lastname}
                 onChange={handleChange}
-                name="lastName"
+                name="lastname"
                 required
               />
             </Form.Group>
 
             <Button
               className="btn btn-green w-100"
-              disabled={!userInfo.firstName || !userInfo.lastName}
+              disabled={!userInfo.firstname || !userInfo.lastname}
               onClick={() => setCurrentStep("two")}
             >
               Continue
@@ -87,16 +76,16 @@ const Signup = () => {
               <Form.Label>Username*</Form.Label>
               <Form.Control
                 type="text"
-                value={userInfo.userName}
+                value={userInfo.username}
                 onChange={handleChange}
-                name="userName"
+                name="username"
                 required
               />
             </Form.Group>
 
             <Button
               className="btn btn-green w-100"
-              disabled={!userInfo.userName}
+              disabled={!userInfo.username}
               onClick={() => setCurrentStep("three")}
             >
               Continue

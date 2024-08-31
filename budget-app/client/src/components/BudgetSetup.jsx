@@ -15,8 +15,8 @@ const BudgetSetup = () => {
   const [step, setStep] = useState("one");
   const [financialInfo, setFinancialInfo] = useState({
     income: "",
-    checkingBalance: "",
-    savingsBalance: "",
+    checking: "",
+    savings: "",
   });
   const [selectedExpenses, setSelectedExpenses] = useState([]);
   const [allExpnseInputHasValue, setAllExpnseInputHasValue] = useState(false);
@@ -99,9 +99,9 @@ const BudgetSetup = () => {
             </Form.Label>
             <Form.Control
               type="number"
-              value={financialInfo.checkingBalance}
+              value={financialInfo.checking}
               onChange={handleChange}
-              name="checkingBalance"
+              name="checking"
               required
               placeholder="$0.00"
             />
@@ -113,10 +113,9 @@ const BudgetSetup = () => {
             </Form.Label>
             <Form.Control
               type="number"
-              value={financialInfo.savingsBalance}
+              value={financialInfo.savings}
               onChange={handleChange}
-              name="savingsBalance"
-              required
+              name="savings"
               placeholder="$0.00"
             />
           </Form.Group>
@@ -125,8 +124,8 @@ const BudgetSetup = () => {
             className="btn btn-green w-100"
             disabled={
               !financialInfo.income ||
-              !financialInfo.checkingBalance ||
-              !financialInfo.savingsBalance
+              !financialInfo.checking ||
+              !financialInfo.savings
             }
             onClick={() => setStep("two")}
           >
