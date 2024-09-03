@@ -113,56 +113,66 @@ users_schema = UserSchema(many=True)
 @app.route('/signup', methods=['POST'])
 def add_user():
     try:
-      user_data = user_schema.load(request.json)
-      print(user_data)
-      return jsonify({"Message": "New user added successfully!"})
-      
-    except ValidationError as err:  
-      return jsonify(err.messages), 400
-    
-    # try:
-    #   with Session(db.engine) as session:
-    #       with session.begin():
-    #         firstname = user_data['firstname']
-    #         lastname = user_data['lastname']
-    #         username = user_data['username']
-    #         hashed_password = bcrypt.hashpw(user_data['password'].encode('utf-8'), bcrypt.gensalt())
-    #         income = user_data['income']
-    #         checking = user_data['checking']
-    #         savings = user_data['savings']
-    #         budget = user_data['budget']
-    #         goals_data = user_data.get('goals', [])
-    #         goals = []
-            
-
-    #         existing_user = session.query(User).filter_by(username=username).first()
-            
-    #         if existing_user:
-    #               return jsonify({"Message": "Username already exists. Please use a different username."}), 400
-
-    #           # Add new user if email does not exist
-    #         new_user= User(firstname=firstname, lastname=lastname, username=username, password=hashed_password, income=income, checking=checking, savings=savings, budget=budget)
-            
-    #         for goal_data in goals_data:
-    #               goal = Goal(
-    #                   user=new_user,
-    #                   amount=goal_data['amount'],
-    #                   icon=goal_data['icon'],
-    #                   text=goal_data['text'],
-    #                   isPrimary=goal_data['isPrimary'],
-    #               )
-    #               goals.append(goal)
-    #               session.add(goal)
-
-    #         new_user.goals = goals  # Associate the goals with the new user
-    #         session.add(new_user)
-    #         session.commit()
+        # Deserialize request data
+        user_data = user_schema.load(request.json)
+        
+        with Session(db.engine) as session:
+            with session.begin():
+                firstname = user_data['firstname']
+                lastname = user_data['lastname']
+                username = user_data['username']
+                hashed_password = bcrypt.hashpw(user_data['password'].encode('utf-8'), bcrypt.gensalt())
+                income = user_data['income']
+                checking = user_data['checking']
+                savings = user_data['savings']
+                budget = user_data['budget']
+                goals_data = user_data.get('goals', [])
                 
-      return jsonify({"Message": "New user added successfully!"})
+                # Check if the username already exists
+                existing_user = session.query(User).filter_by(username=username).first()
+                
+                if existing_user:
+                    return jsonify({"Message": "Username already exists. Please use a different username."}), 400
 
+                # Create a new user
+                new_user = User(
+                    firstname=firstname, 
+                    lastname=lastname, 
+                    username=username, 
+                    password=hashed_password, 
+                    income=income, 
+                    checking=checking, 
+                    savings=savings, 
+                    budget=budget
+                )
+                
+                # Add goals to the user
+                goals = []
+                for goal_data in goals_data:
+                    goal = Goal(
+                        user=new_user,
+                        amount=goal_data['amount'],
+                        icon=goal_data['icon'],
+                        text=goal_data['text'],
+                        isPrimary=goal_data['isPrimary'],
+                    )
+                    goals.append(goal)
+                    session.add(goal)
+
+                # Associate the goals with the new user
+                new_user.goals = goals
+                session.add(new_user)
+                session.commit()
+
+        return jsonify({"Message": "New user added successfully!"})
+    
+    except ValidationError as err:
+        return jsonify(err.messages), 400
     except Exception as e:
-        print(f"An error occurred: {e}")
-        return jsonify({"Message": "Signup failed due to an internal error"}), 500
+        # Catch any other exceptions and log them if needed
+        return jsonify({"Message": f"An error occurred: {str(e)}"}), 500
+
+  
 
 
 # Login 

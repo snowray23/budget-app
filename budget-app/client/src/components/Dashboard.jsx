@@ -1,15 +1,27 @@
-import React from 'react';
+import {useState, useEffect} from 'react';
 
 
-import NavDashboard from "../assets/NavDashboard.png"
-import NavGoals from "../assets/NavGoals.png"
-import NavTransactions from "../assets/NavTransactions.png"
-import NavSettings from "../assets/NavSettings.png"
 
-const Dashboard = () => {
+
+import {jwtDecode} from 'jwt-decode';
+
+const Dashboard = ({onDashboardData}) => {
+  const [decodedToken, setDecodedToken] = useState(null)
+
+  useEffect(() => {
+    const token = sessionStorage.getItem('token')
+    const decodedToken = jwtDecode(token);
+    setDecodedToken(decodedToken)
+    onDashboardData(token)
+  }, [])
+
+  const handleLogout = () =>{
+    sessionStorage.removeItem('token')
+  }
+
   return (
     <div id="dashboard-container">
-      <h2>Welcome back, name!</h2>
+      <h2>Welcome back, {decodedToken?.firstname}! <span onClick={handleLogout}><small>Logout</small></span></h2>
 
       <p>Show  accounts</p>
 
@@ -25,24 +37,7 @@ const Dashboard = () => {
 
         </div>
 
-      <nav className="bottom-nav">
-        <div className="nav-item">
-        <img src={NavDashboard} alt="Dashboard" className="icon" />
-          <span className="nav-text">Dashboard</span>
-        </div>
-        <div className="nav-item">
-        <img src={NavTransactions} alt="Transactions" className="icon" />
-          <span className="nav-text">Transactions</span>
-        </div>
-        <div className="nav-item">
-        <img src={NavGoals} alt="Goals" className="icon" />
-          <span className="nav-text">Goals</span>
-        </div>
-        <div className="nav-item">
-        <img src={NavSettings} alt="Settings" className="icon" />
-          <span className="nav-text">Settings</span>
-        </div>
-      </nav>
+     
     </div>
   );
 };
