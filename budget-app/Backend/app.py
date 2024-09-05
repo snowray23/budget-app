@@ -184,6 +184,7 @@ def login():
     
     query = select(User).filter(User.username == username)
     user = db.session.execute(query).scalars().first()
+    
 
     if not user or not bcrypt.checkpw(password.encode('utf-8'), user.password.encode('utf-8')):
         return jsonify({"message": "Invalid email or password"}), 401
@@ -191,7 +192,10 @@ def login():
     additional_claims = {
       'user_id': user.user_id,
       'username': user.username,
-      'firstname': user.firstname
+      'firstname': user.firstname,
+      'checking': user.checking,
+      'savings': user.savings,
+      'budget': user.budget,
     }
 
     access_token = create_access_token(identity=user.user_id, additional_claims=additional_claims)
@@ -210,8 +214,8 @@ def get_users():
 
 
 # Get one customer
-@app.route('/users/<int:user_id>', methods=['GET'])
-def get_user(user_id):
+@app.route('/goals/<int:user_id>', methods=['GET'])
+def get_goal(user_id):
   query = select(User).filter(User.user_id == user_id)
   user = db.session.execute(query).scalars().first()
   
