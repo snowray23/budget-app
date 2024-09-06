@@ -51,6 +51,7 @@ class User(Base):
   budget: Mapped[str] = mapped_column(db.String(255))
 
   goals: Mapped[List["Goal"]] = db.relationship("Goal", back_populates="user")
+  transactions: Mapped[List["Transaction"]] = db.relationship("Transaction", back_populates="user")
 
 
 class Goal(Base):
@@ -63,6 +64,19 @@ class Goal(Base):
   isPrimary: Mapped[bool] = mapped_column(Boolean)
   
   user: Mapped["User"] = db.relationship("User", back_populates="goals")
+
+
+class Transaction(Base):
+  __tablename__ = "transactions"
+  transaction_id: Mapped[int] = mapped_column(autoincrement=True, primary_key=True)
+  user_id: Mapped[int] = mapped_column(db.ForeignKey("users.user_id"))
+  text: Mapped[str] = mapped_column(db.String(255))
+  amount: Mapped[int] = mapped_column(db.String(255))
+  type: Mapped[str] = mapped_column(db.String(255))
+  icon: Mapped[str] = mapped_column(db.String(255))
+  date: Mapped[str] = mapped_column(db.String(255))
+  
+  user: Mapped["User"] = db.relationship("User", back_populates="transactions")
 
 
 with app.app_context():
@@ -107,62 +121,86 @@ user_schema = UserSchema()
 users_schema = UserSchema(many=True)
 
 
+class TransactionSchema(ma.Schema):
+    transaction_id = fields.Integer(required=False)
+    user_id = fields.Integer(required=True)
+    amount = fields.String(required=True)
+    icon = fields.String(required=True)
+    text = fields.String(required=True)
+    type = fields.String(required=True)
+    date = fields.String(required=True)
+    
+    class Meta:
+        fields = ("transaction_id", "user_id", "amount", "icon", 'text', 'type', 'date')
+
+transaction_schema = TransactionSchema()
+transactions_schema = TransactionSchema(many=True)
 
 # ==================== API Routes =====================
 # Add new user
 @app.route('/signup', methods=['POST'])
 def add_user():
     try:
-      user_data = user_schema.load(request.json)
-      print(user_data)
-      return jsonify({"Message": "New user added successfully!"})
-      
-    except ValidationError as err:  
-      return jsonify(err.messages), 400
-    
-    # try:
-    #   with Session(db.engine) as session:
-    #       with session.begin():
-    #         firstname = user_data['firstname']
-    #         lastname = user_data['lastname']
-    #         username = user_data['username']
-    #         hashed_password = bcrypt.hashpw(user_data['password'].encode('utf-8'), bcrypt.gensalt())
-    #         income = user_data['income']
-    #         checking = user_data['checking']
-    #         savings = user_data['savings']
-    #         budget = user_data['budget']
-    #         goals_data = user_data.get('goals', [])
-    #         goals = []
-            
-
-    #         existing_user = session.query(User).filter_by(username=username).first()
-            
-    #         if existing_user:
-    #               return jsonify({"Message": "Username already exists. Please use a different username."}), 400
-
-    #           # Add new user if email does not exist
-    #         new_user= User(firstname=firstname, lastname=lastname, username=username, password=hashed_password, income=income, checking=checking, savings=savings, budget=budget)
-            
-    #         for goal_data in goals_data:
-    #               goal = Goal(
-    #                   user=new_user,
-    #                   amount=goal_data['amount'],
-    #                   icon=goal_data['icon'],
-    #                   text=goal_data['text'],
-    #                   isPrimary=goal_data['isPrimary'],
-    #               )
-    #               goals.append(goal)
-    #               session.add(goal)
-
-    #         new_user.goals = goals  # Associate the goals with the new user
-    #         session.add(new_user)
-    #         session.commit()
+        # Deserialize request data
+        user_data = user_schema.load(request.json)
+        
+        with Session(db.engine) as session:
+            with session.begin():
+                firstname = user_data['firstname']
+                lastname = user_data['lastname']
+                username = user_data['username']
+                hashed_password = bcrypt.hashpw(user_data['password'].encode('utf-8'), bcrypt.gensalt())
+                income = user_data['income']
+                checking = user_data['checking']
+                savings = user_data['savings']
+                budget = user_data['budget']
+                goals_data = user_data.get('goals', [])
                 
-      return jsonify({"Message": "New user added successfully!"})
+                # Check if the username already exists
+                existing_user = session.query(User).filter_by(username=username).first()
+                
+                if existing_user:
+                    return jsonify({"Message": "Username already exists. Please use a different username."}), 400
 
+                # Create a new user
+                new_user = User(
+                    firstname=firstname, 
+                    lastname=lastname, 
+                    username=username, 
+                    password=hashed_password, 
+                    income=income, 
+                    checking=checking, 
+                    savings=savings, 
+                    budget=budget
+                )
+                
+                # Add goals to the user
+                goals = []
+                for goal_data in goals_data:
+                    goal = Goal(
+                        user=new_user,
+                        amount=goal_data['amount'],
+                        icon=goal_data['icon'],
+                        text=goal_data['text'],
+                        isPrimary=goal_data['isPrimary'],
+                    )
+                    goals.append(goal)
+                    session.add(goal)
+
+                # Associate the goals with the new user
+                new_user.goals = goals
+                session.add(new_user)
+                session.commit()
+
+        return jsonify({"Message": "New user added successfully!"})
+    
+    except ValidationError as err:
+        return jsonify(err.messages), 400
     except Exception as e:
-        print(f"An error occurred: {e}")
-        return jsonify({"Message": "Signup failed due to an internal error"}), 500
+        # Catch any other exceptions and log them if needed
+        return jsonify({"Message": f"An error occurred: {str(e)}"}), 500
+
+  
 
 
 # Login 
@@ -174,6 +212,7 @@ def login():
     
     query = select(User).filter(User.username == username)
     user = db.session.execute(query).scalars().first()
+    
 
     if not user or not bcrypt.checkpw(password.encode('utf-8'), user.password.encode('utf-8')):
         return jsonify({"message": "Invalid email or password"}), 401
@@ -181,7 +220,10 @@ def login():
     additional_claims = {
       'user_id': user.user_id,
       'username': user.username,
-      'firstname': user.firstname
+      'firstname': user.firstname,
+      'checking': user.checking,
+      'savings': user.savings,
+      'budget': user.budget,
     }
 
     access_token = create_access_token(identity=user.user_id, additional_claims=additional_claims)
@@ -200,13 +242,52 @@ def get_users():
 
 
 # Get one customer
-@app.route('/users/<int:user_id>', methods=['GET'])
-def get_user(user_id):
+@app.route('/goals/<int:user_id>', methods=['GET'])
+def get_goal(user_id):
   query = select(User).filter(User.user_id == user_id)
   user = db.session.execute(query).scalars().first()
   
   return user_schema.jsonify(user)
 
+
+
+@app.route('/add/transaction', methods=['POST'])
+def add_transaction():
+    try:
+        # Deserialize request data
+        transaction_data = transaction_schema.load(request.json)
+        print(transaction_data)
+
+        with Session(db.engine) as session:
+            with session.begin():
+          
+                user_id = transaction_data['user_id']
+                text = transaction_data['text']
+                amount= transaction_data['amount']
+                icon= transaction_data['icon']
+                type = transaction_data['type']
+                date = transaction_data['date']
+
+                new_transaction = Transaction(
+                    user_id=user_id,
+                    text=text, 
+                    amount=amount, 
+                    icon=icon, 
+                    type=type, 
+                    date=date, 
+                )
+
+                session.add(new_transaction)
+                session.commit()
+
+        return jsonify({"Message": "New user added successfully!"})
+    
+  
+    except Exception as e:
+        return jsonify({"Message": f"An error occurred: {str(e)}"}), 500
+
+  # Test it with Postman and check if data add to DB table was created transaction table giving null the part i highlight is showing unreachable
+  
 
 
 

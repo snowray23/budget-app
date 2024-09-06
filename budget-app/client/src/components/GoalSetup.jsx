@@ -4,8 +4,10 @@ import Vector from "../assets/Vector.png";
 import { goals } from '../goals'; 
 import Button from 'react-bootstrap/esm/Button';
 import axios from 'axios'
+import { useNavigate } from 'react-router-dom';
 
 const GoalSetup = () => {
+  const navigate= useNavigate()
   const location = useLocation();
   const { userInfo, financialInfo, remainingBalance } = location.state;
   
@@ -16,6 +18,9 @@ const GoalSetup = () => {
   const [customGoalName, setCustomGoalName] = useState('')
   const [radioGoalSelected, setRadioGoalSelected] = useState(false);
   const [primaryGoalAmount, setPrimaryGoalAmount] = useState('')
+
+  const [token, setToken] = useState("") 
+  const [errMsg, setErrMsg] = useState("")
 
   // console.log({...userInfo, ...financialInfo, budget: remainingBalance, goals: selectedGoals})
 
@@ -87,7 +92,7 @@ const GoalSetup = () => {
 
  const handleClickSubmit = () => {
      
-     const data = {...userInfo, ...financialInfo, budget: remainingBalance, goals: selectedGoals
+     const data = {...userInfo, ...financialInfo, budget: remainingBalance.toString(), goals: selectedGoals
       .map(item => ({ ...item, user_id: 1 })) // Add `user_id` property
       .map(({ selected, id, ...rest }) => rest)
       } // Remove `selected` and `id` properties}
@@ -99,7 +104,21 @@ const GoalSetup = () => {
         setStep("four")
      })
      .catch(err => {
-        alert('Signup failed!')
+       console.log(err)
+       setErrMsg(err.response.data.Message)
+     })
+ }
+
+
+ const directToDashboard = e => {
+  axios.post('http://127.0.0.1:5000/login', userInfo)
+     .then(res => {
+        setToken(res.data.access_token)
+        sessionStorage.setItem('token', res.data.access_token)
+        navigate('/dashboard')
+     })
+     .catch(err => {
+        alert('Dashboard redirect failed!')
         console.log(err)
      })
  }
@@ -223,6 +242,7 @@ const GoalSetup = () => {
               </div>
               <h2>How much would you like to save?</h2>
               <input type="number" placeholder='$0.00' className='secondary-amount' onChange={(e) => handleSecondaryGoals(e, secondary.id)}/>
+              <p className='text-danger'><small>{errMsg}</small></p>
             </div>
           ))}
 
@@ -243,6 +263,7 @@ const GoalSetup = () => {
 
   <Button
             className="btn btn-green w-100"
+            onClick={directToDashboard}
           >
             Take me to my dashboard
           </Button>
