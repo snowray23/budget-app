@@ -51,6 +51,7 @@ class User(Base):
   budget: Mapped[str] = mapped_column(db.String(255))
 
   goals: Mapped[List["Goal"]] = db.relationship("Goal", back_populates="user")
+  transactions: Mapped[List["Transaction"]] = db.relationship("Transaction", back_populates="user")
 
 
 class Goal(Base):
@@ -63,6 +64,19 @@ class Goal(Base):
   isPrimary: Mapped[bool] = mapped_column(Boolean)
   
   user: Mapped["User"] = db.relationship("User", back_populates="goals")
+
+
+class Transaction(Base):
+  __tablename__ = "transactions"
+  transaction_id: Mapped[int] = mapped_column(autoincrement=True, primary_key=True)
+  user_id: Mapped[int] = mapped_column(db.ForeignKey("users.user_id"))
+  text: Mapped[str] = mapped_column(db.String(255))
+  amount: Mapped[int] = mapped_column(db.String(255))
+  type: Mapped[str] = mapped_column(db.String(255))
+  icon: Mapped[str] = mapped_column(db.String(255))
+  date: Mapped[str] = mapped_column(db.String(255))
+  
+  user: Mapped["User"] = db.relationship("User", back_populates="transactions")
 
 
 with app.app_context():
@@ -107,6 +121,20 @@ user_schema = UserSchema()
 users_schema = UserSchema(many=True)
 
 
+class TransactionSchema(ma.Schema):
+    transaction_id = fields.Integer(required=False)
+    user_id = fields.Integer(required=True)
+    amount = fields.String(required=True)
+    icon = fields.String(required=True)
+    text = fields.String(required=True)
+    type = fields.String(required=True)
+    date = fields.String(required=True)
+    
+    class Meta:
+        fields = ("transaction_id", "user_id", "amount", "icon", 'text', 'type', 'date')
+
+transaction_schema = TransactionSchema()
+transactions_schema = TransactionSchema(many=True)
 
 # ==================== API Routes =====================
 # Add new user
@@ -221,6 +249,45 @@ def get_goal(user_id):
   
   return user_schema.jsonify(user)
 
+
+
+@app.route('/add/transaction', methods=['POST'])
+def add_transaction():
+    try:
+        # Deserialize request data
+        transaction_data = transaction_schema.load(request.json)
+        print(transaction_data)
+
+        with Session(db.engine) as session:
+            with session.begin():
+          
+                user_id = transaction_data['user_id']
+                text = transaction_data['text']
+                amount= transaction_data['amount']
+                icon= transaction_data['icon']
+                type = transaction_data['type']
+                date = transaction_data['date']
+
+                new_transaction = Transaction(
+                    user_id=user_id,
+                    text=text, 
+                    amount=amount, 
+                    icon=icon, 
+                    type=type, 
+                    date=date, 
+                )
+
+                session.add(new_transaction)
+                session.commit()
+
+        return jsonify({"Message": "New user added successfully!"})
+    
+  
+    except Exception as e:
+        return jsonify({"Message": f"An error occurred: {str(e)}"}), 500
+
+  # Test it with Postman and check if data add to DB table was created transaction table giving null the part i highlight is showing unreachable
+  
 
 
 

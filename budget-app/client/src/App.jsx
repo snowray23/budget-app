@@ -18,7 +18,7 @@ import {useState} from 'react'
 function App() {
   const [isLoggedIn, setIsLoggedIn] = useState(false)
   const handleDashboardData = (data) => {
-    setIsLoggedIn(true); 
+    data ? setIsLoggedIn(true) : setIsLoggedIn(false); 
   };
   
   return (
@@ -34,7 +34,7 @@ function App() {
         <Route path="/goals" element={<Goals />} />
         <Route path="/settings" element={<Settings />} />
       </Routes>
-      {isLoggedIn && <Navigation/>}
+      {(isLoggedIn || sessionStorage.getItem('token')) && <Navigation/>}
     </div>
   );
 }

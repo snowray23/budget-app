@@ -1,5 +1,5 @@
 import React from 'react'
-import { Link } from 'react-router-dom'
+import { NavLink } from 'react-router-dom'
 
 
 
@@ -12,28 +12,28 @@ const Navigation = () => {
   return (
     <nav className="bottom-nav">
         <div className="nav-item">
-            <Link to="/dashboard">
+            <NavLink to="/dashboard" className={({ isActive }) => (isActive ? 'active-link' : 'inactive-link')}>
                 <img src={NavDashboard} alt="Dashboard" className="icon" />
                 <span className="nav-text">Dashboard</span>
-          </Link>
+          </NavLink>
         </div>
         <div className="nav-item">
-            <Link to="/transactions">
+            <NavLink to="/transactions" className={({ isActive }) => (isActive ? 'active-link' : 'inactive-link')}>
           <img src={NavTransactions} alt="Transactions" className="icon" />
           <span className="nav-text">Transactions</span>
-          </Link>
+          </NavLink>
         </div>
         <div className="nav-item">
-            <Link to="/goals">
+            <NavLink to="/goals" className={({ isActive }) => (isActive ? 'active-link' : 'inactive-link')}>
         <img src={NavGoals} alt="Goals" className="icon" />
           <span className="nav-text">Goals</span>
-          </Link>
+          </NavLink>
         </div>
         <div className="nav-item">
-            <Link to="/settings">
+            <NavLink to="/settings" className={({ isActive }) => (isActive ? 'active-link' : 'inactive-link')}>
                 <img src={NavSettings} alt="Settings" className="icon" />
-                <span className="nav-text">Settings</span>
-            </Link>
+                <span className="">Settings</span>
+            </NavLink>
         </div>
       </nav>
   )

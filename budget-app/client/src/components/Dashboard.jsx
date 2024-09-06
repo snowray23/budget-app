@@ -11,6 +11,8 @@ import 'simple-react-donut-chart/src/style.css'
 import { jwtDecode } from "jwt-decode";
 import Button from "react-bootstrap/esm/Button";
 
+import { useNavigate } from "react-router-dom";
+
 const Dashboard = ({ onDashboardData }) => {
   const [decodedToken, setDecodedToken] = useState(null);
   const [spendings, setSpendings] = useState(5000);
@@ -21,6 +23,8 @@ const Dashboard = ({ onDashboardData }) => {
 
   const primaryGoal = userGoals.find(goal => goal.isPrimary) 
   const nonPrimaryGoals = userGoals.filter(goal => !goal.isPrimary) 
+
+  const navigate = useNavigate()
 
   console.log(primaryGoal)
 
@@ -52,6 +56,9 @@ useEffect(() => {
 
 const handleLogout = () => {
     sessionStorage.removeItem("token");
+    setTimeout(() => {navigate('/login')}, 500)
+    onDashboardData('');
+    
 };
 
 const handleDropdownChange = e => {
@@ -72,9 +79,9 @@ const handleDropdownChange = e => {
 
   return (
     <div id="dashboard-container">
-      <Link className="logout" to="/login" onClick={handleLogout}>
+      <div className="logout" onClick={handleLogout}>
         <img src={exit} alt="logout" />
-      </Link>
+      </div>
       <h2>Welcome back, {decodedToken?.firstname}! </h2>
       
       {budgetMode === 'showRemainingBudget' && <DonoutChart
@@ -149,9 +156,9 @@ const handleDropdownChange = e => {
                 <div className="fs-2 ms-auto"> ${primaryGoal?.amount}</div>
         </div>
 
-        <div className="d-flex py-4 justify-content-between gap-3 flex-wrap">
+        <div className="d-flex py-4 justify-content-between gap-2 flex-wrap">
           {nonPrimaryGoals.map(goal => (
-             <div id={goal.goal_id} className="account-item">
+             <div key={goal.goal_id} id={goal.goal_id} className="account-item" style={{width: '48%'}}>
              <p className="mb-4">{goal?.text}</p>
              <p className="mb-0 fs-2 text-center">${goal?.amount}</p>
            </div>

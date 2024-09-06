@@ -119,7 +119,8 @@ a.signup-link {
 
 #signup button:disabled, 
 #budget-setup button:disabled,
- #goal-setup button:disabled{
+ #goal-setup button:disabled,
+ #transactions button:disabled{
   background-color: #F6F5F7 !important;
   opacity: 0.25;
   color: #0C0B0C;
@@ -313,8 +314,8 @@ p.custom-goal {
 .nav-text {
 font-family: Aileron;
 font-style: normal;
-color: #F6F5F7;
-text-decoration: none !;
+/* color: #F6F5F7; */
+text-decoration: none;
 text-align: left;
 }
 
@@ -395,4 +396,26 @@ min-height: 100vh;
   border-radius: 8px;
    border: 2px solid #565CF0;
    padding: 16px;
+}
+
+
+#transactions,#goals,#settings {
+  display: flex;
+  flex-direction: column;
+  min-height: 87vh;   
+}
+
+
+#transaction-summary, #transaction-final {
+  background-image: linear-gradient(to right, #9055F0 , #565CF0);
+  border-radius: 8px;
+}
+
+.active-link {
+  font-weight: bold;
+  color: #56F0B8 !important;
+}
+
+.inactive-link {
+  color: #f6f5f7;
 }
