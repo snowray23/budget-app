@@ -13,9 +13,59 @@ import Button from "react-bootstrap/esm/Button";
 
 import { useNavigate } from "react-router-dom";
 
+import { Doughnut } from 'react-chartjs-2';
+import { Chart as ChartJS, ArcElement, Tooltip, Legend } from 'chart.js';
+
+// Register the components needed for the chart
+ChartJS.register(ArcElement, Tooltip, Legend);
+
+
+const DonutChart = ({budget, bal}) => {
+  console.log(budget) //34
+  console.log(bal)  // 6600
+  
+  const data = {
+    // labels: ['Remaining'],
+    datasets: [
+      {
+        label: 'Budgets',
+        data: [budget-bal , bal],
+        backgroundColor: [
+          '#16272F',
+          '#56F0B8',
+        ],
+        borderColor: [
+          '#16272F',
+          '#56F0B8'
+        ],
+        borderWidth: 2,
+      },
+    ],
+  };
+
+  const options = {
+    responsive: true,
+    plugins: {
+      legend: {
+        positionX: 'center',
+        positionY: 'center',
+      },
+      tooltip: {
+        enabled: true,
+      },
+    },
+    cutout: '90%', 
+  };
+
+  return <Doughnut data={data} options={options} />;
+};
+
+
+
 const Dashboard = ({ onDashboardData }) => {
   const [decodedToken, setDecodedToken] = useState(null);
-  const [spendings, setSpendings] = useState(5000);
+  const [spendings, setSpendings] = useState(0);
+  const [budget, setBudget] = useState(0);
   const [budgetMode, setBudgetMode] = useState('showRemainingBudget')
   const [percentageVal, setPercentageVal] = useState(null)
   const [showAccounts, setShowAccounts] = useState(false)
@@ -25,8 +75,11 @@ const Dashboard = ({ onDashboardData }) => {
   const nonPrimaryGoals = userGoals.filter(goal => !goal.isPrimary) 
 
   const navigate = useNavigate()
+  // Budget 10000
+  // Remain: 3400
+  // Spending: 6600
 
-  console.log(primaryGoal)
+  // console.log(primaryGoal)
 
 useEffect(() => {
     const token = sessionStorage.getItem("token");
@@ -35,13 +88,12 @@ useEffect(() => {
     onDashboardData(token);
 
     const budget = decodedToken?.budget || 0;
-    const percentage = (budget - spendings) / budget * 100;
-    setPercentageVal(percentage)
+    setBudget(Number(budget))
 }, []);
 
 
 useEffect(() => {
-  console.log(decodedToken)
+  // console.log(decodedToken)
   const fetchUser = async () => {
     const token = sessionStorage.getItem("token");
     const decodedToken = jwtDecode(token);
@@ -52,8 +104,30 @@ useEffect(() => {
   fetchUser()
 }, [])
 
+    useEffect(() => {
+    let sumSpendings = 0;
+    let sumIncomes = 0;
 
+    axios.get('http://localhost:5000/transactions')
+      .then(res => {
+        console.log("Fetched transactions:", res.data);
 
+        res.data.forEach(item => {
+          if (item.type === 'expense') {
+            sumSpendings += Number(item.amount);
+          } else if (item.type === 'income') {
+            sumIncomes += Number(item.amount);
+          }
+        });
+
+        console.log("Sum Spendings:", sumSpendings);
+        console.log("Sum Incomes:", sumIncomes);
+
+        setBudget(prevBudget => prevBudget + sumIncomes);
+        setSpendings(sumSpendings);
+      })
+      .catch(error => console.error('Error fetching transactions:', error));
+  }, []);
 const handleLogout = () => {
     sessionStorage.removeItem("token");
     setTimeout(() => {navigate('/login')}, 500)
@@ -66,13 +140,9 @@ const handleDropdownChange = e => {
   
   if (e.target.value === 'remaining') {
     setBudgetMode('showRemainingBudget')
-    const percentage = (budget - spendings) / budget * 100;
-    setPercentageVal(percentage)
-    console.log(percentage)
 
   } else if (e.target.value === 'spending') {
     setBudgetMode('showSpending')
-    setPercentageVal(100-percentageVal)
   }
 } 
 
@@ -83,49 +153,12 @@ const handleDropdownChange = e => {
         <img src={exit} alt="logout" />
       </div>
       <h2>Welcome back, {decodedToken?.firstname}! </h2>
-      
-      {budgetMode === 'showRemainingBudget' && <DonoutChart
-          percentage={percentageVal}
-          colorOn="#56F0B8"
-          colorOff="#16272F"
-          circleColor="#0B0317"
-          labelOn={`$${decodedToken?.budget}`}
-          labelOff=""
-          baseClass="customize"
-          textStyle={{
-              color: '#ff0000',
-          }}
-          labelStyle={{
-              off: {
-                  fontSize: '16px',
-              },
-              on: {
-                  fontSize: '18px',
-              },
-          }}
-/>}
 
 
-{budgetMode === 'showSpending' && <DonoutChart
-          percentage={percentageVal}
-          colorOn="#16272F" 
-          colorOff="#56F0B8" 
-          circleColor="#0B0317"
-          labelOn={`$${spendings}`}
-          labelOff=""
-          baseClass="customize"
-          textStyle={{
-              color: '#56F0B8',
-          }}
-          labelStyle={{
-              off: {
-                  fontSize: '16px',
-              },
-              on: {
-                  fontSize: '18px',
-              },
-          }}
-/>}
+    <div className="w-75 mx-auto" id="chart-container">
+    {budgetMode === 'showSpending' ? <DonutChart budget={budget} bal={spendings}/> :  <DonutChart budget={budget} bal={budget-spendings}/>}
+    <label htmlFor="">${budgetMode === 'showSpending' ? spendings : budget-spendings}</label>
+    </div>
 
       <select id="dropdown" onChange={handleDropdownChange}>
         <option value="remaining">Remaining budget</option>
@@ -147,6 +180,7 @@ const handleDropdownChange = e => {
       <p>
         See recent transactions <img src={dropdown} alt="dropdown" />
       </p>
+      <Link to="/transactions">All Transactions</Link>
 
       <div className="goal-tracker">
         <h2>Goal Tracker</h2>
