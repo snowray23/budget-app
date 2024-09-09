@@ -48,7 +48,7 @@ class User(Base):
   income: Mapped[str] = mapped_column(db.String(255))
   checking: Mapped[str] = mapped_column(db.String(255))
   savings: Mapped[str] = mapped_column(db.String(255))
-  budget: Mapped[str] = mapped_column(db.String(255))
+  budget: Mapped[float] = mapped_column(db.String(255))
 
   goals: Mapped[List["Goal"]] = db.relationship("Goal", back_populates="user")
   transactions: Mapped[List["Transaction"]] = db.relationship("Transaction", back_populates="user")
@@ -111,7 +111,7 @@ class UserSchema(ma.Schema):
   income = fields.String(required=True)
   checking = fields.String(required=True)
   savings = fields.String(required=True)
-  budget = fields.String(required=True)
+  budget = fields.Float(required=True)
   goals = fields.Nested(GoalSchema, many=True)
 
   class Meta:
@@ -278,6 +278,7 @@ def add_transaction():
                 )
 
                 session.add(new_transaction)
+
                 session.commit()
 
         return jsonify({"Message": "New user added successfully!"})
@@ -288,6 +289,17 @@ def add_transaction():
 
   # Test it with Postman and check if data add to DB table was created transaction table giving null the part i highlight is showing unreachable
   
+
+# Get all transactions
+@app.route('/transactions', methods=['GET'])
+def get_transactions():
+  query = select(Transaction)
+  transactions = db.session.execute(query).scalars().all()
+  
+  print(transactions)
+  return transactions_schema.jsonify(transactions)
+
+
 
 
 
