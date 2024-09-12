@@ -1,0 +1,415 @@
+@import url("https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,100;0,300;0,400;0,500;0,700;0,900;1,100;1,300;1,400;1,500;1,700;1,900&display=swap");
+
+@font-face {
+  font-family: "Aileron";
+  src: url("./assets/aileron.regular.otf") format("opentype");
+  font-weight: normal;
+  font-style: normal;
+}
+
+body {
+  padding: 0;
+  margin: 0;
+  box-sizing: inherit;
+  font-family: "Aileron", sans-serif;
+  background: #0b0317 !important;
+  color: #f6f5f7 !important;
+}
+
+/* Landing */
+.landing {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+}
+
+/* LoginSignup */
+#login-signup {
+  text-align: center;
+  padding: 0 16px;
+}
+
+#login-signup .logo {
+  margin-top: 54px;
+}
+
+#login-signup .title{
+  margin-top: 133px;
+  margin-bottom: 67px;
+  font-size: 24px;
+  font-style: normal;
+  font-weight: 600;
+  line-height: normal;
+  letter-spacing: 0.24px;
+}
+
+#login-signup button {
+  display: block;
+  width: 100%;
+  
+}
+
+.btn-login {
+  background-color: #fff !important;
+  margin-bottom: 16px;
+}
+
+.btn-green {
+  background-color: #56f0b8 !important;
+  color: #0C0B0C;
+}
+
+/* login */
+
+#login, #signup, #goal-setup,#budget-setup,#transactions {
+  padding: 88px 15px 0 15px;
+}
+
+
+
+#login h2,
+#signup h2,
+#budget-setup h2,
+#goal-setup h2,
+#dashboard-container h2 {
+  font-size: 24px;
+  font-style: normal;
+  font-weight: 600;
+  line-height: normal;
+  letter-spacing: 0.24px;
+  margin-bottom: 24px;
+  margin-top: 24px;
+}
+
+#login-signup .btn,
+#login .btn,
+#signup .btn,
+#budget-setup .btn,
+#goal-setup .btn,
+#transactions .btn,
+#dashboard .btn
+{
+  padding: 16px;
+  color: #0C0B0C;
+}
+
+#login-signup input,
+#login input,
+#signup input{
+  height: 44px !important;
+}
+
+#login .password {
+  margin-bottom: 24px;
+}
+
+a.signup-link {
+  display: block;
+  text-align: center;
+  margin-top: 24px;
+  color:#f6f5f7;
+  font-size: 16px;
+}
+
+#signup button 
+{
+  margin-top: 24px;
+}
+
+#signup button:disabled, 
+#budget-setup button:disabled,
+ #goal-setup button:disabled,
+ #transactions button:disabled{
+  background-color: #F6F5F7 !important;
+  opacity: 0.25;
+  color: #0C0B0C;
+}
+
+.back {
+   position: absolute;
+   left: 30px;
+   top : 60px;
+}
+
+#signup ul {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+}
+
+#signup ul li {
+  width: 50%;
+}
+
+/* Goals */
+.goals {
+  padding: 0 37.5px;
+  margin: 24px 0;
+}
+
+.goals .goal {
+  width: 84px;
+  height: 84px;
+  border-radius: 100%;
+  background-color: #565CF0;
+  padding: 16px;
+  margin-bottom: 28px;
+}
+
+.goals .goal .text {
+  font-size: 12px;
+}
+
+img[alt="Utilities"] {
+  width: 49px;
+  height: 48px;
+}
+
+.goals button {
+  height: 51px;
+}
+
+.expense-item, .goal-item ,.secondary-goal{
+  background-image: linear-gradient(to right, #9055F0 , #565CF0);
+  border-radius: 8px ;
+  height: 93px;
+}
+
+.expense-item .expense-icon {
+  width: 60%;
+}
+
+.expense-item .expense-input {
+  width: 147px;
+  height: 100%;
+}
+
+.expense-item .expense-input input {
+  height: 100%;
+  border-radius: 8px;
+  border: 0;
+  font-weight: bold;
+}
+
+.expense-item .expense-input input:focus {
+  outline: none;
+}
+
+#budget-setup button {
+  margin-top: 24px;
+}
+
+#spinner {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+  transform: translateY(-130px);
+}
+
+#remaining-balance {
+  color: #56F0B8;
+  font-family: Aileron;
+  font-size: 48px;
+  font-style: normal;
+  font-weight: 700;
+  line-height: normal;
+  letter-spacing: 0.48px;
+  text-align: center;
+  margin: 120px 0;
+}
+
+
+/* goalsetup */
+
+#goal-setup button {
+  margin-top: 24px;
+  margin-bottom: 44px;
+}
+
+
+.goalset-item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 16px ;
+  width: 176px; 
+  height: 115px;
+  border-radius: 8px;
+  background: linear-gradient(180deg, #9055F0 0%, #565CF0 100%);
+  box-shadow: 0px 4px 4px 0px rgba(0, 0, 0, 0.10);
+  text-align: center;
+  box-sizing: border-box; 
+  flex-grow: 1;
+}
+
+#goal-setup input[type="radio"] {
+  width: 24px !important;
+  height: 24px;
+}
+
+.goalset-text {
+  width: 148px;
+  height: auto;
+}
+
+.goalset-icon {
+  display: block;
+  width: 42px;
+  height: 44px;
+  margin: 16px 0 6px 0
+}
+
+.goal-amount, .primary-amount, .secondary-amount {
+  width: 100%;
+  height: 44px;
+  border-radius: 4px;
+  border: 1px ;
+  padding: 8px;
+  outline: none; 
+ }
+
+p.custom-goal {
+  margin-top: 24px;
+  width: 362px;
+  height: auto;
+  color: #F6F5F7;
+  font-family: Aileron;
+  font-size: 16px;
+  font-style: normal;
+  font-weight: 400;
+  line-height: normal;
+  letter-spacing: 0.16px;
+}
+
+/* nav */
+.bottom-nav {
+  display: flex;
+  justify-content: space-around;
+  align-items: center;
+  margin-bottom: 24px;
+  position: relative;
+  bottom: 0;
+  margin-top: auto;
+}
+
+.nav-item {
+  display: flex;
+  flex-direction: column; 
+  align-items: center;
+  text-align: center;
+  justify-content: center;
+  width: 34px;
+ 
+}
+/* .nav-item img {
+  width: 34px;
+  height: 34px;
+  margin-bottom: 8px; 
+  flex-shrink: 0;
+} */
+.nav-text {
+font-family: Aileron;
+font-style: normal;
+/* color: #F6F5F7; */
+text-decoration: none;
+text-align: left;
+}
+
+.bottom-nav a {
+  text-decoration: none;
+}
+
+/* dash */
+
+#dashboard-container{
+  display: flex;
+padding: 70px 15px 24px 15px;
+flex-direction: column;
+justify-content: center;
+gap: 24px;
+text-align: left;
+min-height: 100vh;
+
+}
+
+.logout {
+  position: absolute;
+  top: 56px;
+  right: 24px;
+}
+
+.svg {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+
+/* #chart  */
+#chart-container {
+  position: relative;
+}
+
+#chart-container label{
+  position: absolute;
+  left: 50%;
+  bottom: 50%;
+  transform: translate(-50%, 50%);
+  font-size: 34px;
+  color: #56F0B8;
+  font-weight: 700;
+}
+/* Dropdown */
+#dashboard-container #dropdown {
+  background-color: #56F0B8;
+  height: 32px;
+  width: 200px;
+  border-radius: 16px;
+  padding: 4px 16px;
+  margin: auto;
+}
+
+#dashboard-container .account-item {
+  border-radius: 8px;
+   border: 2px solid #565CF0;
+   padding: 16px;
+}
+
+
+#transactions,#goals,#settings {
+  display: flex;
+  flex-direction: column;
+  min-height: 87vh;   
+}
+
+
+#transaction-summary, #transaction-final {
+  background-image: linear-gradient(to right, #9055F0 , #565CF0);
+  border-radius: 8px;
+}
+
+.active-link {
+  font-weight: bold;
+  color: #56F0B8 !important;
+}
+
+.inactive-link {
+  color: #f6f5f7;
+}
+
+.grid-container {
+  display: grid;
+  grid-template-columns: auto auto auto auto;
+}
+/* 
+.grid-item {
+  background-color: rgba(255, 255, 255, 0.8);
+  border: 1px solid rgba(0, 0, 0, 0.8);
+  padding: 20px;
+  font-size: 30px;
+  text-align: center;
+} */
