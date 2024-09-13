@@ -4,13 +4,18 @@ import Button from 'react-bootstrap/Button';
 import {useState, useEffect} from 'react';
 import logoLg from '../assets/logo_lg.png'
 import logo from '../assets/logo.png'
+import {useNavigate} from 'react-router-dom'
 
 
 const LoginSignup = () => {
+  const navigate = useNavigate();
   const [showLanding, setShowLanding] = useState(true)
 
   useEffect(() => {
     setTimeout(() => { setShowLanding(false) }, 2000)
+    if(sessionStorage.getItem("token")) {
+      navigate('/dashboard')
+    }
   }, [])
 
   return (

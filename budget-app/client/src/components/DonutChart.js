@@ -54,6 +54,7 @@ const DonutChart = () => {
           ],
           borderColor: [
             '#16272F',
+            
             '#56F0B8'
           ],
           borderWidth: 2,

@@ -92,7 +92,7 @@ const GoalSetup = () => {
 
  const handleClickSubmit = () => {
      
-     const data = {...userInfo, ...financialInfo, budget: remainingBalance.toString(), goals: selectedGoals
+     const data = {...userInfo, ...financialInfo, budget: remainingBalance.toString(), spendings: "0", goals: selectedGoals
       .map(item => ({ ...item, user_id: 1 })) // Add `user_id` property
       .map(({ selected, id, ...rest }) => rest)
       } // Remove `selected` and `id` properties}

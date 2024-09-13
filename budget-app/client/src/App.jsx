@@ -12,7 +12,7 @@ import Goals from "./components/Goals";
 import Settings from "./components/Settings";
 import Navigation from './components/Navigation';
 
-import {useState} from 'react'
+import {useState, useEffect} from 'react'
 
 
 function App() {
@@ -20,7 +20,7 @@ function App() {
   const handleDashboardData = (data) => {
     data ? setIsLoggedIn(true) : setIsLoggedIn(false); 
   };
-  
+
   return (
     <div>
       <Routes>

@@ -62,8 +62,8 @@ body {
 
 /* login */
 
-#login, #signup, #goal-setup,#budget-setup,#transactions {
-  padding: 88px 15px 0 15px;
+#login, #signup, #goal-setup,#budget-setup,#transactions, #goals, #settings {
+  padding: 88px 15px 60px 15px;
 }
 
 
@@ -373,7 +373,8 @@ min-height: 100vh;
   margin: auto;
 }
 
-#dashboard-container .account-item {
+#dashboard-container .account-item,
+#goals .account-item  {
   border-radius: 8px;
    border: 2px solid #565CF0;
    padding: 16px;
@@ -413,3 +414,13 @@ min-height: 100vh;
   font-size: 30px;
   text-align: center;
 } */
+
+#goal-input-modal {
+  width: 100%;
+}
+
+.list-group-item {
+  color: #fff !important;
+  background-color: transparent !important;
+}
+
