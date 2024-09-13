@@ -3,7 +3,7 @@ import { Link } from "react-router-dom";
 import Button from 'react-bootstrap/Button';
 import {useState, useEffect} from 'react';
 import logoLg from '../assets/logo_lg.png'
-import logo from '../assets/logo.png'
+import Logo from '../assets/Logo.png'
 import {useNavigate} from 'react-router-dom'
 
 
@@ -26,7 +26,7 @@ const LoginSignup = () => {
     <div id="login-signup">
       <div className="logo">
         <img
-          src={logo}
+          src={Logo}
           alt="Logo"
         />
       </div>

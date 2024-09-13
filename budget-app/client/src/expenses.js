@@ -1,5 +1,5 @@
 import Housing from './assets/housing.png'
-import Utilities from './assets/utilities.png'
+import Utilities from './assets/Utilities.png'
 import Phone from "./assets/phone.png"
 import Sub from "./assets/sub.png"
 import Membership from "./assets/membership.png"
@@ -16,7 +16,7 @@ export const expenses = [
     {id: 4, icon: Sub, text: 'Subscriptions', selected: false, amount: ""},
     {id: 5, icon: Membership, text: 'Membership', selected: false, amount: ""},
     {id: 6, icon: Insurance, text: 'Insurance', selected: false, amount: ""},
-    {id: 7, icon: Mental, text: 'Mental', selected: false, amount: ""},
+    {id: 7, icon: Mental, text: 'MentalHealth', selected: false, amount: ""},
     {id: 8, icon: Loan, text: 'Loan', selected: false, amount: ""},
     {id: 9, icon: Other, text: 'Other', selected: false, amount: ""},
 ]
