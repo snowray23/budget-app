@@ -5,11 +5,8 @@ import dropdown from "../assets/dropdown.png";
 import dropup from "../assets/dropup.png"
 import axios from "axios";
 
-import DonoutChart from 'simple-react-donut-chart'
 import 'simple-react-donut-chart/src/style.css'
-
 import { jwtDecode } from "jwt-decode";
-import Button from "react-bootstrap/esm/Button";
 
 import { useNavigate } from "react-router-dom";
 
@@ -20,23 +17,49 @@ import { Chart as ChartJS, ArcElement, Tooltip, Legend } from 'chart.js';
 ChartJS.register(ArcElement, Tooltip, Legend);
 
 
-const DonutChart = ({budget, bal}) => {
-  console.log(budget) //34
-  console.log(bal)  // 6600
-  
+const DonutChart = ({ budgetMode, budget, spendings }) => {
+
+  // Calculate the proportions for the chart
+  const frac1 = (budget / (Number(budget) + Number(spendings))) * 100;
+  const frac2 = (spendings / (Number(budget) + Number(spendings))) * 100;
+
+  console.log(frac1);
+  console.log(frac2);
+
+  // Adjust the data to show the "empty" part with a separate value
+  const mode = budgetMode === 'showRemainingBudget' ? [
+    {
+      label: 'Spendings',
+      value: frac2,
+    },
+    {
+      label: 'Remaining Budget',
+      value: 100 - frac2,  // Remaining part
+    }
+  ] : [
+    {
+      label: 'Remaining Budget',
+      value: frac1,
+    },
+    {
+      label: 'Spendings',
+      value: 100 - frac1,  // Remaining part
+    }
+  ];
+
   const data = {
-    // labels: ['Remaining'],
+    labels: [],
     datasets: [
       {
         label: 'Budgets',
-        data: [budget-bal , bal],
+        data: mode.map(item => item.value),
         backgroundColor: [
-          '#16272F',
-          '#56F0B8',
+          '#16272F', // Color for remaining/empty part
+          '#56F0B8', // Color for spendings
         ],
         borderColor: [
           '#16272F',
-          '#56F0B8'
+          '#56F0B8',
         ],
         borderWidth: 2,
       },
@@ -47,98 +70,61 @@ const DonutChart = ({budget, bal}) => {
     responsive: true,
     plugins: {
       legend: {
-        positionX: 'center',
-        positionY: 'center',
+        position: 'top',  // Adjusted to a valid position
       },
       tooltip: {
         enabled: true,
       },
     },
-    cutout: '90%', 
+    cutout: '90%',  // Adjust donut hole size
   };
 
   return <Doughnut data={data} options={options} />;
 };
 
 
-
 const Dashboard = ({ onDashboardData }) => {
-  const [decodedToken, setDecodedToken] = useState(null);
-  const [spendings, setSpendings] = useState(0);
-  const [budget, setBudget] = useState(0);
+  const [decodedToken] = useState(null);
+  // const [spendings, setSpendings] = useState(0);
+  // const [budget, setBudget] = useState(0);
   const [budgetMode, setBudgetMode] = useState('showRemainingBudget')
-  const [percentageVal, setPercentageVal] = useState(null)
   const [showAccounts, setShowAccounts] = useState(false)
+  const [userInfo, setUserInfo] = useState()
   const [userGoals, setUserGoals] = useState([])
 
   const primaryGoal = userGoals.find(goal => goal.isPrimary) 
   const nonPrimaryGoals = userGoals.filter(goal => !goal.isPrimary) 
 
   const navigate = useNavigate()
-  // Budget 10000
-  // Remain: 3400
-  // Spending: 6600
-
-  // console.log(primaryGoal)
-
-useEffect(() => {
-    const token = sessionStorage.getItem("token");
-    const decodedToken = jwtDecode(token);
-    setDecodedToken(decodedToken);
-    onDashboardData(token);
-
-    const budget = decodedToken?.budget || 0;
-    setBudget(Number(budget))
-}, []);
 
 
 useEffect(() => {
   // console.log(decodedToken)
-  const fetchUser = async () => {
+  const fetchUserGoals = async () => {
     const token = sessionStorage.getItem("token");
+    if (!token) {
+      return;
+    }
+
     const decodedToken = jwtDecode(token);
     const response = await axios.get(`http://localhost:5000/goals/${decodedToken?.user_id}`)
+    const useInfoResponse = await axios.get(`http://localhost:5000/users/${decodedToken?.user_id}`)
     setUserGoals(response.data.goals)
+    setUserInfo(useInfoResponse.data)
+    onDashboardData(token)
   }
 
-  fetchUser()
-}, [])
+  fetchUserGoals()
+}, [onDashboardData])
 
-    useEffect(() => {
-    let sumSpendings = 0;
-    let sumIncomes = 0;
 
-    axios.get('http://localhost:5000/transactions')
-      .then(res => {
-        console.log("Fetched transactions:", res.data);
-
-        res.data.forEach(item => {
-          if (item.type === 'expense') {
-            sumSpendings += Number(item.amount);
-          } else if (item.type === 'income') {
-            sumIncomes += Number(item.amount);
-          }
-        });
-
-        console.log("Sum Spendings:", sumSpendings);
-        console.log("Sum Incomes:", sumIncomes);
-
-        setBudget(prevBudget => prevBudget + sumIncomes);
-        setSpendings(sumSpendings);
-      })
-      .catch(error => console.error('Error fetching transactions:', error));
-  }, []);
-
-  
 const handleLogout = () => {
     sessionStorage.removeItem("token");
     setTimeout(() => {navigate('/login')}, 500)
     onDashboardData('');
-    
 };
 
 const handleDropdownChange = e => {
-  const budget = decodedToken?.budget || 0;
   
   if (e.target.value === 'remaining') {
     setBudgetMode('showRemainingBudget')
@@ -152,14 +138,14 @@ const handleDropdownChange = e => {
   return (
     <div id="dashboard-container">
       <div className="logout" onClick={handleLogout}>
-        <img src={exit} alt="logout" />
+        <i className="fa fa-sign-out fs-1" aria-hidden="true"></i>
       </div>
-      <h2>Welcome back, {decodedToken?.firstname}! </h2>
+      <h2>Welcome back, {userInfo?.firstname}! </h2>
 
 
     <div className="w-75 mx-auto" id="chart-container">
-    {budgetMode === 'showSpending' ? <DonutChart budget={budget} bal={spendings}/> :  <DonutChart budget={budget} bal={budget-spendings}/>}
-    <label htmlFor="">${budgetMode === 'showSpending' ? spendings : budget-spendings}</label>
+    <DonutChart budget={userInfo?.budget} spendings={userInfo?.spendings} budgetMode={budgetMode}   emptyColor={'#e0e0e0'} />
+    {userInfo && <label>${budgetMode === 'showSpending' ? userInfo?.spendings : userInfo?.budget }</label>}
     </div>
 
       <select id="dropdown" onChange={handleDropdownChange}>
@@ -171,11 +157,11 @@ const handleDropdownChange = e => {
       {showAccounts && <div className="d-flex justify-content-between">
         <div className="w-50 me-1 account-item">
           <p className="mb-4">Checking</p>
-          <p className="mb-0 fs-2 text-center">${decodedToken?.checking}</p>
+          <p className="mb-0 fs-2 text-center">${userInfo?.checking}</p>
         </div>
         <div className="w-50 ms-1 account-item">
           <p className="mb-4">Savings</p>
-          <p className="mb-0 fs-2 text-center">${decodedToken?.savings}</p>
+          <p className="mb-0 fs-2 text-center">${userInfo?.savings}</p>
           </div>
       </div>}
 

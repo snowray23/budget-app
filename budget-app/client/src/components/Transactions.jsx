@@ -1,11 +1,11 @@
 import React, { useState, useEffect } from "react";
-import { Link } from "react-router-dom";
 import Button from "react-bootstrap/Button";
 import dropdown from "../assets/dropdown.png";
 import Vector from "../assets/Vector.png";
 import Form from "react-bootstrap/Form";
 import axios from "axios";
 import { jwtDecode } from "jwt-decode";
+import circle from "../assets/circle.webp"
 
 import inarrow from "../assets/inarrow.png"
 import outarrow from "../assets/outarrow.png"
@@ -25,6 +25,8 @@ const Transactions = () => {
   const [error, setError] = useState("")
   const [transactionsDB, setTransactionDB] = useState([])
   const [isAdded, setIsAdded] = useState(false)
+  const [limit, setLimit] = useState(7)
+  const [limitBudgetMsg, setLimitBudgetMsg] = useState("")
 
   const handleChange = (e) => {
     setTransaction({ ...transaction, [e.target.name]: e.target.value });
@@ -68,9 +70,11 @@ const Transactions = () => {
     .then(res => {
       setStep("four")
       setIsAdded(!isAdded)
+      setLimitBudgetMsg(res.data.Message)
     })
     .catch(e => {
       setError('Transaction not added!')
+      console.log(e)
     })
   }
 
@@ -84,7 +88,7 @@ const Transactions = () => {
           </p>
 
           {transactionsDB.length === 0 ? <p>You don't have any transaction</p> : <div>
-            {transactionsDB.sort((a,b) => new Date(a.date) - new Date(b.date)).map((item, index) => (<div key={index} className="my-3">
+            {transactionsDB.slice(0, limit).sort((a,b) => new Date(a.date) - new Date(b.date)).map((item, index) => (<div key={index} className="my-3">
               { transactionsDB[index].date !== transactionsDB[index - 1]?.date && <p>{item.date}</p>}
               <div className="d-flex justify-content-between align-items-center">
                 <div><img src={item.icon} alt={item.text} /> </div>
@@ -98,7 +102,7 @@ const Transactions = () => {
 
 
           <div className="my-5">
-            <Button className="mb-2 btn btn-dark w-100 text-white border">
+            <Button className="mb-2 btn btn-dark w-100 text-white border" onClick={() => setLimit(transactionsDB.length)}>
               See all
             </Button>
             <Button
@@ -241,7 +245,13 @@ const Transactions = () => {
 
           <Button
             className="btn btn-dark w-100 text-white border mb-2"
-            onClick={() => setStep("two")}
+            onClick={
+              () => {
+                setStep("two") 
+                setTransaction({...transaction, text: '', amount: ''})
+            }
+              
+            }
         
           >
             Add another transaction
@@ -255,7 +265,7 @@ const Transactions = () => {
             Done
           </Button>
           
-          
+          <p className="text-danger">{limitBudgetMsg}</p>
 
         
         

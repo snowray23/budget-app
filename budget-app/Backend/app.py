@@ -48,7 +48,8 @@ class User(Base):
   income: Mapped[str] = mapped_column(db.String(255))
   checking: Mapped[str] = mapped_column(db.String(255))
   savings: Mapped[str] = mapped_column(db.String(255))
-  budget: Mapped[float] = mapped_column(db.String(255))
+  budget: Mapped[str] = mapped_column(db.String(255))
+  spendings: Mapped[str] = mapped_column(db.String(255))
 
   goals: Mapped[List["Goal"]] = db.relationship("Goal", back_populates="user")
   transactions: Mapped[List["Transaction"]] = db.relationship("Transaction", back_populates="user")
@@ -62,6 +63,7 @@ class Goal(Base):
   icon: Mapped[str] = mapped_column(db.String(255))
   text: Mapped[str] = mapped_column(db.String(255))
   isPrimary: Mapped[bool] = mapped_column(Boolean)
+  cumulative: Mapped[str] = mapped_column(db.String(255))
   
   user: Mapped["User"] = db.relationship("User", back_populates="goals")
 
@@ -93,9 +95,10 @@ class GoalSchema(ma.Schema):
     icon = fields.String(required=True)
     text = fields.String(required=True)
     isPrimary = fields.Boolean(required=True) 
+    cumulative = fields.String(required=True)
    
     class Meta:
-        fields = ("goal_id", "user_id", "amount", "icon", 'text', 'isPrimary')
+        fields = ("goal_id", "user_id", "amount", "icon", 'text', 'isPrimary', 'cumulative')
 
 goal_schema = GoalSchema()
 goals_schema = GoalSchema(many=True)
@@ -111,11 +114,12 @@ class UserSchema(ma.Schema):
   income = fields.String(required=True)
   checking = fields.String(required=True)
   savings = fields.String(required=True)
-  budget = fields.Float(required=True)
+  budget = fields.String(required=True)
+  spendings = fields.String(required=True)
   goals = fields.Nested(GoalSchema, many=True)
 
   class Meta:
-    fields = ('user_id', 'firstname', 'lastname', 'password', 'username', 'income', 'checking', 'savings', 'budget','goals')
+    fields = ('user_id', 'firstname', 'lastname', 'password', 'username', 'income', 'checking', 'savings', 'budget','spendings','goals')
   
 user_schema = UserSchema()
 users_schema = UserSchema(many=True)
@@ -154,6 +158,7 @@ def add_user():
                 checking = user_data['checking']
                 savings = user_data['savings']
                 budget = user_data['budget']
+                spendings = user_data['spendings']
                 goals_data = user_data.get('goals', [])
                 
                 # Check if the username already exists
@@ -171,7 +176,8 @@ def add_user():
                     income=income, 
                     checking=checking, 
                     savings=savings, 
-                    budget=budget
+                    budget=budget,
+                    spendings=spendings,
                 )
                 
                 # Add goals to the user
@@ -183,6 +189,7 @@ def add_user():
                         icon=goal_data['icon'],
                         text=goal_data['text'],
                         isPrimary=goal_data['isPrimary'],
+                        cumulative=goal_data['cumulative'],
                     )
                     goals.append(goal)
                     session.add(goal)
@@ -224,6 +231,7 @@ def login():
       'checking': user.checking,
       'savings': user.savings,
       'budget': user.budget,
+      'spendings': user.spendings
     }
 
     access_token = create_access_token(identity=user.user_id, additional_claims=additional_claims)
@@ -239,6 +247,13 @@ def get_users():
   print(users)
   return users_schema.jsonify(users)
 
+
+@app.route('/users/<int:user_id>', methods=['GET'])
+def get_user(user_id):
+  query = select(User).filter(User.user_id == user_id)
+  user = db.session.execute(query).scalars().first()
+  
+  return user_schema.jsonify(user)
 
 
 # Get one customer
@@ -276,19 +291,30 @@ def add_transaction():
                     type=type, 
                     date=date, 
                 )
+                
+                query = select(User).filter(User.user_id == user_id)
+                user = session.execute(query).scalars().first()
+             
 
+                if type == 'income':
+                    setattr(user, 'budget', str(int(user.budget) + int(amount) ))
+                elif type == 'expense':
+                  if int(amount) > int(user.budget):
+                     return jsonify({"Message": "You don't have enough budget for this transaction"})
+                  else:   
+                    setattr(user, 'budget', str(int(user.budget) - int(amount) ))
+                    setattr(user, 'spendings', str(int(user.spendings) + int(amount) ))
+               
                 session.add(new_transaction)
-
                 session.commit()
 
-        return jsonify({"Message": "New user added successfully!"})
+        return jsonify({"Message": "New transaction added successfully!"})
     
   
     except Exception as e:
         return jsonify({"Message": f"An error occurred: {str(e)}"}), 500
-
-  # Test it with Postman and check if data add to DB table was created transaction table giving null the part i highlight is showing unreachable
   
+
 
 # Get all transactions
 @app.route('/transactions', methods=['GET'])
@@ -299,6 +325,30 @@ def get_transactions():
   print(transactions)
   return transactions_schema.jsonify(transactions)
 
+
+
+@app.route('/<int:user_id>/<int:goal_id>', methods=['PUT'])
+def update_goal(user_id, goal_id):
+  
+    data = request.json
+    value = data.get('cumulative')
+    
+    with Session(db.engine) as session:
+     with session.begin():
+        query = select(Goal).join(User, Goal.user_id == User.user_id).filter(Goal.user_id == user_id, Goal.goal_id == goal_id)
+        goal = session.execute(query).scalars().first()
+        
+        userQuery = select(User).filter(User.user_id == user_id)
+        user = session.execute(userQuery).scalars().first()
+
+        if int(value) > int(user.budget):
+           return jsonify({"Message": "You don't have enough budget for this transaction"})
+        else:   
+          setattr(goal, "cumulative", str(int(value) + int(goal.cumulative)))
+          setattr(user, 'budget', str(int(user.budget) - int(value) ))
+
+        session.commit()
+        return jsonify({"Message": "Goal updated successfully"}), 200
 
 
 
