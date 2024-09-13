@@ -1,12 +1,15 @@
-from flask import Flask, jsonify, request
+from flask import Flask, jsonify, request ,send_from_directory
 from flask_cors import CORS
 from flask_marshmallow import Marshmallow
 from marshmallow import fields, validate, ValidationError
 from sqlalchemy import Boolean
 
+
 from flask_sqlalchemy import SQLAlchemy
 from sqlalchemy.orm import DeclarativeBase, Mapped, mapped_column, Session
 from sqlalchemy import select, delete
+
+import os
 
 from typing import List
 
@@ -35,6 +38,9 @@ class Base(DeclarativeBase):
 
 db = SQLAlchemy(app, model_class=Base)
 ma = Marshmallow(app)
+
+
+
 
 
 class User(Base):
@@ -141,6 +147,7 @@ transaction_schema = TransactionSchema()
 transactions_schema = TransactionSchema(many=True)
 
 # ==================== API Routes =====================
+
 # Add new user
 @app.route('/signup', methods=['POST'])
 def add_user():
@@ -349,6 +356,13 @@ def update_goal(user_id, goal_id):
 
         session.commit()
         return jsonify({"Message": "Goal updated successfully"}), 200
+     
+
+
+    
+     
+
+
 
 
 
