@@ -128,6 +128,8 @@ useEffect(() => {
       })
       .catch(error => console.error('Error fetching transactions:', error));
   }, []);
+
+  
 const handleLogout = () => {
     sessionStorage.removeItem("token");
     setTimeout(() => {navigate('/login')}, 500)
