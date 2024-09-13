@@ -4,5 +4,5 @@ services:
     repo: https://github.com/snowray23/budget-app
     branch: main
     root: Backend
-    buildCommand: <build-command>
-    startCommand: <start-command>
+    buildCommand: "pip install -r requirements.txt"
+    startCommand: "gunicorn app:app"
