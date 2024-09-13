@@ -120,7 +120,8 @@ a.signup-link {
 #signup button:disabled, 
 #budget-setup button:disabled,
  #goal-setup button:disabled,
- #transactions button:disabled{
+ #transactions button:disabled,
+ #login button:disabled{
   background-color: #F6F5F7 !important;
   opacity: 0.25;
   color: #0C0B0C;

@@ -50,7 +50,7 @@ const Login = () => {
           <p className="text-danger"><small>{errorMsge}</small></p>
         </div>
         
-        <Button className="btn btn-green w-100" type="submit">
+        <Button className="btn btn-green w-100" disabled={!credential.username || !credential.password} type="submit" >
           Continue
         </Button>
       </Form>
