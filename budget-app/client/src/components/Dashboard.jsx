@@ -23,8 +23,6 @@ const DonutChart = ({ budgetMode, budget, spendings }) => {
   const frac1 = (budget / (Number(budget) + Number(spendings))) * 100;
   const frac2 = (spendings / (Number(budget) + Number(spendings))) * 100;
 
-  console.log(frac1);
-  console.log(frac2);
 
   // Adjust the data to show the "empty" part with a separate value
   const mode = budgetMode === 'showRemainingBudget' ? [

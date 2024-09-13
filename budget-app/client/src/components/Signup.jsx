@@ -5,6 +5,8 @@ import { useState } from "react";
 import Vector from "../assets/Vector.png";
 import PasswordChecklist from "react-password-checklist";
 
+import { useNavigate } from 'react-router-dom';
+
 const Signup = () => {
   const [userInfo, setUserInfo] = useState({
     firstname: "",
@@ -13,13 +15,18 @@ const Signup = () => {
     password: "",
   });
   const [currentStep, setCurrentStep] = useState("one");
-  
   const [isFormValid, setIsFormValid] = useState(false);
+  const navigate = useNavigate();
 
   const handleChange = (e) => {
     setUserInfo({ ...userInfo, [e.target.name]: e.target.value });
   };
 
+  const handleContinue = () => {
+    if (isFormValid) {
+      navigate('/budget-setup', { state: { userInfo } });
+    }
+  };
 
   return (
     <div id="signup">
@@ -128,11 +135,9 @@ const Signup = () => {
             />
 
             <Button 
-              as={Link}
-              to="/budget-setup"
-              state={{ userInfo }}  
               className="btn btn-green w-100"
               disabled={!isFormValid}
+              onClick={handleContinue} 
             >
               Continue
             </Button>
